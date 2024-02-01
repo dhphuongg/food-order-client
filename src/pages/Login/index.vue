@@ -1,5 +1,5 @@
 <script setup>
-import { authApi } from "@/api/auth.api";
+import { authApi } from '@/api/auth.api';
 const { login } = authApi;
 </script>
 
