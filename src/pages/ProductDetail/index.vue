@@ -157,6 +157,9 @@
   display: flex;
   font-size: 16px;
   margin: 0 auto;
+  margin: 60px 0;
+  gap: 60px;
+  background-color: #fff;
 
   @include tablet {
     display: flex;
@@ -172,14 +175,14 @@
   }
 
   @include mobile {
-    width: 360px;
+    width: 100%;
+    padding: 0 10px;
+    gap: 20px;
     flex-direction: column;
     justify-content: center;
   }
 
-  margin: 60px 0;
-  gap: 60px;
-  background-color: #fff;
+  
 
   .numberOfProd {
     color: #000;
@@ -200,7 +203,8 @@
     }
 
     @include mobile {
-      width: 50%;
+      width: 100%;
+      margin: 0 auto;
     }
 
     & img {
@@ -241,7 +245,8 @@
         font-size: 35px;
       }
       @include mobile {
-        font-size: 35px;
+        font-size: 30px;
+        line-height: 30px;
       }
     }
 
@@ -515,13 +520,16 @@ ul {
 
 iframe {
   width: 80%;
+  height: 500px !important;
 
   @include tablet {
     width: 100% !important;
+    height: 400px !important;
   }
 
   @include mobile {
     width: 100% !important;
+    height: 300px !important;
   }
 }
 </style>
