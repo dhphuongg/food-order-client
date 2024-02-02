@@ -1,6 +1,6 @@
 export const ApiConstant = {
   auth: {
-    login: "auth/login",
+    login: 'auth/login',
   },
-  product: "api/v1/product"
+  product: 'api/v1/product'
 };
