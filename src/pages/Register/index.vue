@@ -1,16 +1,21 @@
 <script setup>
-import { login } from '@/api/auth.api';
+import { useGeolocation } from '@vueuse/core';
+
+import { register, login } from '@/api/auth.api';
 import { useAuthStore } from '@/stores/auth';
-import { validateUsername, validatePassword } from '@/utils/validator';
+import { validateUsername, validateEmail, validatePassword } from '@/utils/validator';
 
 const message = useMessage();
 const authStore = useAuthStore();
 const router = useRouter();
 
+const { coords } = useGeolocation();
 const loading = ref(false);
-const account = reactive({
+const formValue = reactive({
   username: null,
-  password: null
+  email: null,
+  password: null,
+  repeatPassword: null
 });
 const formRef = ref(null);
 const rules = {
@@ -19,24 +24,44 @@ const rules = {
     validator: validateUsername,
     trigger: 'blur'
   },
+  email: {
+    required: true,
+    validator: validateEmail,
+    trigger: 'blur'
+  },
   password: {
     required: true,
     validator: validatePassword,
     trigger: 'blur'
+  },
+  repeatPassword: {
+    required: true,
+    validator: (_, repeatPassword) => {
+      if (repeatPassword !== formValue.password) {
+        return new Error('Mật khẩu không giống với mật khẩu đã nhập lại!');
+      }
+      return true;
+    },
+    trigger: ['blur', 'password-input']
   }
 };
 
-const loginHandler = () => {
+const registerHandler = () => {
   formRef.value?.validate(async (errors) => {
     if (!errors) {
       loading.value = true;
       try {
-        const { data } = await login(account);
+        await register({
+          ...formValue,
+          latitude: coords.value.latitude,
+          longitude: coords.value.longitude
+        });
+        const { data } = await login(formValue);
         authStore.save(data.data);
-        message.success('Đăng nhập thành công. Xin chào <b>' + account.username + '</b>');
-        if (data.data.authorities[0].authority === 'ROLE_USER') router.push('/');
-        else router.push('/admin');
+        message.success('Đăng ký tài khoản thành công. Xin chào ' + formValue.username);
+        router.push('/');
       } catch (err) {
+        console.log(err);
         if (!!err.response) {
           message.error(err.response.data.message);
         } else {
@@ -50,16 +75,28 @@ const loginHandler = () => {
 </script>
 
 <template>
-  <div class="login">
-    <n-form class="login-form" :model="account" :rules="rules" ref="formRef">
-      <h2>Đăng nhập</h2>
+  <div class="register">
+    <n-form class="register-form" :model="formValue" :rules="rules" ref="formRef">
+      <h2>Đăng ký</h2>
       <n-form-item class="form-item" path="username" label="Tên người dùng">
         <n-input
           :theme-overrides="{
             border: '0'
           }"
           class="form-input"
-          v-model:value="account.username"
+          v-model:value="formValue.username"
+          size="large"
+          placeholder=""
+          type="text"
+        />
+      </n-form-item>
+      <n-form-item class="form-item" path="email" label="Địa chỉ email">
+        <n-input
+          :theme-overrides="{
+            border: '0'
+          }"
+          class="form-input"
+          v-model:value="formValue.email"
           size="large"
           placeholder=""
           type="text"
@@ -71,16 +108,26 @@ const loginHandler = () => {
             border: '0'
           }"
           class="form-input"
-          v-model:value="account.password"
+          v-model:value="formValue.password"
           size="large"
           placeholder=""
           type="password"
           show-password-on="click"
         />
       </n-form-item>
-      <div class="forgot-password">
-        <router-link to="/forgot-password">Quên mật khẩu?</router-link>
-      </div>
+      <n-form-item class="form-item" path="repeatPassword" label="Xác nhận mật khẩu">
+        <n-input
+          :theme-overrides="{
+            border: '0'
+          }"
+          class="form-input"
+          v-model:value="formValue.repeatPassword"
+          size="large"
+          placeholder=""
+          type="password"
+          show-password-on="click"
+        />
+      </n-form-item>
       <n-button
         attr-type="submit"
         block
@@ -89,21 +136,21 @@ const loginHandler = () => {
         icon-placement="left"
         size="large"
         :loading="loading"
-        @click="loginHandler"
+        @click="registerHandler"
       >
-        Đăng nhập
+        Đăng ký
       </n-button>
     </n-form>
     <div class="register">
-      Bạn chưa có tài khoản?
-      <router-link to="/register">Đăng ký</router-link>
+      Bạn đã có tài khoản?
+      <router-link to="/login">Đăng nhập</router-link>
     </div>
   </div>
 </template>
 
 <style scoped lang="scss">
-.login {
-  .login-form {
+.register {
+  .register-form {
     h2 {
       font-size: 32px;
       text-align: center !important;
@@ -118,17 +165,9 @@ const loginHandler = () => {
     }
     .form-item {
       position: relative;
-      margin-top: 30px;
+      margin-top: 20px;
       .form-input {
         border-bottom: 1px solid black;
-      }
-    }
-    .forgot-password {
-      text-align: right;
-      a {
-        &:hover {
-          color: #fd8f52;
-        }
       }
     }
   }
@@ -165,7 +204,7 @@ const loginHandler = () => {
 </style>
 
 <route lang="yaml">
-name: Login
+name: Register
 meta:
   layout: auth
 </route>
