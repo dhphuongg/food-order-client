@@ -22,7 +22,9 @@ const handleLogin = () => {
                 <HfButton @click="handleLogin">Đăng nhập</HfButton>
             </div>
             <div class="nav-mobile">
-                <IconSearch size="26" class="icon mobile-search" />
+                <router-link to="/">
+                    <IconSearch size="24" class="icon mobile-search" />
+                </router-link>
                 <label for="menu-mobile">
                     <IconMenu2 class="menu-mobile" />
                 </label>
@@ -154,7 +156,7 @@ const handleLogin = () => {
         margin: 0;
 
         @include mixins.mobile {
-            display: block;
+            display: flex;
         }
     }
 
