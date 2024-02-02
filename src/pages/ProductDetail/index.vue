@@ -1,3 +1,15 @@
+<script setup>
+import { productApi } from "@/api/product.api";
+import { useRoute } from 'vue-router'
+const { getInfo } = productApi;
+const route = useRoute();
+onBeforeMount(async () => {
+  console.log("helo", route);
+  const id = route?.params?.id;
+  let res = await getInfo(id);
+  if (res) console.log(res);
+})
+</script>
 <template>
   <div class="detail detail-container">
     <div>
@@ -181,8 +193,6 @@
     flex-direction: column;
     justify-content: center;
   }
-
-  
 
   .numberOfProd {
     color: #000;
@@ -537,4 +547,5 @@ iframe {
 <route lang="yaml">
     name: ProductDetail
     meta:
+    path: '/product-detail/:id'
 </route>
