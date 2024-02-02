@@ -10,7 +10,7 @@ const handleSearch = () => {
         <h1 class="h1-question">Hôm nay, bạn muốn ăn gì? </h1>
         <form action="" class="form-search" @submit.prevent="handleSearch">
             <IconCurrentLocation class="icon" />
-            <input type="text" v-bind="searchValue" name="" id="" placeholder="Nhập tên món ăn bạn muốn tìm kiếm...">
+            <input type="text" v-model="searchValue" name="" id="" placeholder="Nhập tên món ăn bạn muốn tìm kiếm...">
             <HfButton class="btn-search">
                 <IconSearch />
             </HfButton>
@@ -20,4 +20,4 @@ const handleSearch = () => {
 </template>
 
 
-<style lang="scss" scoped src="@/components/HfSearchBannerHomePage/styles.scss"></style>
+<style lang="scss" scoped src="./hfSearchBannerHomePage.scss"></style>

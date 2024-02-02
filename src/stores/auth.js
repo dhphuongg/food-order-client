@@ -1,13 +1,13 @@
-import { LocalStorage } from "@/constant/localStorage.constant";
-import { defineStore, acceptHMRUpdate } from "pinia";
+import { LocalStorage } from '@/constant/localStorage.constant';
+import { defineStore, acceptHMRUpdate } from 'pinia';
 
-export const useAuthStore = defineStore("auth", {
+export const useAuthStore = defineStore('auth', {
   state: () => ({
-    accessToken: localStorage.getItem(LocalStorage.accessToken) || "",
-    userId: localStorage.getItem(LocalStorage.userId) || "",
+    accessToken: localStorage.getItem(LocalStorage.accessToken) || '',
+    userId: localStorage.getItem(LocalStorage.userId) || ''
   }),
   getters: {
-    loggedIn: ({ accessToken, userId }) => !!accessToken && !!userId,
+    loggedIn: ({ accessToken, userId }) => !!accessToken && !!userId
   },
   actions: {
     save({ accessToken, userId }) {
@@ -17,12 +17,12 @@ export const useAuthStore = defineStore("auth", {
       localStorage.setItem(LocalStorage.userId, this.userId);
     },
     clear() {
-      this.accessToken = "";
-      this.userId = "";
+      this.accessToken = '';
+      this.userId = '';
       localStorage.removeItem(LocalStorage.accessToken);
       localStorage.removeItem(LocalStorage.userId);
-    },
-  },
+    }
+  }
 });
 
 if (import.meta.hot) {

@@ -8,7 +8,7 @@
                 Gợi ý món ăn
             </h1>
             <div class="suggest-showmore">
-                <HfButton title="Xem thêm" class="btn-showmore" />
+                <HfButton class="btn-showmore">Xem thêm</HfButton>
             </div>
         </div>
     </div>

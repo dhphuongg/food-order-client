@@ -1,13 +1,25 @@
 <script setup>
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+const handleLogin = () => {
+    router.push('/login');
+}
 </script>
 <template>
     <header class="container header">
         <div class="wide">
-            <img src="@/assets/images/logo.png" alt="logo" class="header-logo">
+            <router-link to="/">
+                <img src="@/assets/images/logo.png" alt="logo" class="header-logo">
+            </router-link>
             <div class="header-menu">
-                <IconSearch size="26" class="icon" />
-                <IconShoppingCartFilled size="26" class="icon" />
-                <HfButton title="Login" />
+                <router-link to="/">
+                    <IconSearch size="26" class="icon" />
+                </router-link>
+                <router-link to="/login">
+                    <IconShoppingCartFilled size="26" class="icon" />
+                </router-link>
+                <HfButton @click="handleLogin">Đăng nhập</HfButton>
             </div>
             <div class="nav-mobile">
                 <IconSearch size="26" class="icon mobile-search" />
@@ -27,13 +39,19 @@
                 <hr>
                 <ul>
                     <li>
-                        <IconShoppingCartFilled size="18" class="icon-menu-mobile" />Giỏ hàng
+                        <router-link to="/">
+                            <IconShoppingCartFilled size="18" class="icon-menu-mobile" />Giỏ hàng
+                        </router-link>
                     </li>
                     <li>
-                        <IconLogin size="18" class="icon-menu-mobile" />Đăng nhập
+                        <router-link to="/login">
+                            <IconLogin size="18" class="icon-menu-mobile" />Đăng nhập
+                        </router-link>
                     </li>
                     <li>
-                        <IconUser size="18" class="icon-menu-mobile" />Đăng ký
+                        <router-link to="/">
+                            <IconUser size="18" class="icon-menu-mobile" />Đăng ký
+                        </router-link>
                     </li>
                 </ul>
             </div>
@@ -59,6 +77,10 @@
         @include mixins.mobile {
             display: none;
         }
+    }
+
+    a {
+        color: $black-color;
     }
 
     label {
@@ -92,7 +114,6 @@
         li {
             padding: 8px;
             @include mixins.flex($align: center);
-            cursor: pointer;
             font-size: 16px;
 
             .icon-menu-mobile {

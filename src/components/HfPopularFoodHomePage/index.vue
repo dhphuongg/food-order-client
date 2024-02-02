@@ -20,7 +20,7 @@
                         LÀM ĐÚNG. LÀM
                         NGON. DÀNH RIÊNG
                         CHO BẠN.</h1>
-                    <HfButton title="ORDER NOW" class="btn-order" />
+                    <HfButton class="btn-order">ORDER NOW</HfButton>
                 </div>
             </div>
         </div>
@@ -35,4 +35,4 @@
 
 
 
-<style lang="scss" scoped src="@/components/HfPopularFoodHomePage/styles.scss"></style>
+<style lang="scss" scoped src="./hfPopularFoodHomePage.scss"></style>

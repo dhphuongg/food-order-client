@@ -1,9 +1,11 @@
 <script setup>
-const props = defineProps(["title"])
+const emit = defineEmits(['click'])
+const handleClick = () => {
+    emit('click');
+}
 </script>
 <template>
-    <button type="submit" class="btn">
-        {{ props?.title }}
+    <button type="submit" class="btn" @click="handleClick">
         <slot></slot>
     </button>
 </template>

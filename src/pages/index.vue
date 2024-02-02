@@ -2,11 +2,11 @@
 <template>
   <div class="main">
     <HfSearchBannerHomePage />
-    <HfCategory />
+    <HfCategoryHomePage />
     <HfHotDogdBannerHomePage />
     <HfFoodSuggestHomePage />
     <HfPopularFoodHomePage />
-    <HfOurCommitmentHomePage/>
+    <HfOurCommitmentHomePage />
   </div>
 </template>
 

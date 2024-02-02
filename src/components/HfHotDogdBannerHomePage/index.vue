@@ -8,7 +8,7 @@
             <div class="banner-info">
                 <h1 class="h1-hotfresh">Hot Fresh</h1>
                 <h1 class="h1-hotdog">HOTDOG</h1>
-                <HfButton title="ĐẶT HÀNG NGAY" class="btn-order" />
+                <HfButton class="btn-order"> ĐẶT HÀNG NGAY</HfButton>
             </div>
             <div class="banner-think">
                 <img src="@/assets/images/banner-image5.png" alt="think">
@@ -24,4 +24,4 @@
         </div>
     </div>
 </template>
-<style lang="scss" scoped src="@/components/HfHotDogdBannerHomePage/styles.scss"></style>
+<style lang="scss" scoped src="./hfHotDogdBannerHomePage.scss"></style>
