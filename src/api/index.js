@@ -9,7 +9,7 @@ const api = axios.create({
   }
 });
 api.interceptors.request.use((config) => {
-  const accessToken = localStorage.getItem(LocalStorage.accessToken);
+  const accessToken = JSON.parse(localStorage.getItem(LocalStorage.auth))?.accessToken;
   config.headers.Authorization = 'Bear ' + accessToken;
   return config;
 }, Promise.reject);
@@ -17,6 +17,7 @@ api.interceptors.response.use(
   (value) => value,
   (error) => {
     if (error.response.status === 401) {
+      localStorage.removeItem(LocalStorage.auth);
       router.push('/login');
     }
   }
