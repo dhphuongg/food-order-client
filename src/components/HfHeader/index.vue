@@ -44,7 +44,7 @@ const handleLogin = () => {
                             </router-link>
                         </li>
                         <li>
-                            <router-link to="/">
+                            <router-link to="/register">
                                 <IconUser size="18" class="icon-menu-mobile" />Đăng ký
                             </router-link>
                         </li>
