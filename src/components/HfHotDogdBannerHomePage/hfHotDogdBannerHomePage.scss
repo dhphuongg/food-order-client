@@ -1,0 +1,126 @@
+@use '@/styles/_mixins' as mixins;
+
+.hotdog-banner {
+    width: 100vw;
+    height: 88vh;
+    background-image: url("@/assets/images/banner-image4.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    position: relative;
+
+    @include mixins.mobile {
+        height: 50vh;
+    }
+
+    @include mixins.small-tablet {
+        height: 50vh;
+    }
+
+    @include mixins.tablet {
+        height: 50vh;
+    }
+
+    .hotdog-image {
+        @include mixins.position(absolute, unset, unset, -8%, unset);
+    }
+
+    .banner-info {
+        @include mixins.position(absolute, 50%, 0, unset, unset, 4);
+        translate: -50% -50%;
+
+        @include mixins.mobile {
+            display: none;
+        }
+
+        @include mixins.small-tablet {
+            display: none;
+        }
+
+        @include mixins.tablet {
+            top: 50%;
+            right: unset;
+            left: 30%;
+        }
+    }
+
+    .h1-hotfresh {
+        @include mixins.title-main(#fff, 42px, 700);
+        font-family: 'Norican', cursive;
+    }
+
+    .h1-hotdog {
+        @include mixins.title-main(#ffc222, 120px, 600);
+        margin: 0px 0 40px;
+        text-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
+    }
+
+    .btn-order {
+        background-color: $white-color;
+        color: #212121;
+        padding: 24px 40px;
+        box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.5);
+        border-radius: 12px;
+
+        font: {
+            weight: 600;
+            size: 14px;
+            family: "Arial";
+        }
+
+        &:hover {
+            background-color: $primary-color;
+            color: $white-color;
+        }
+    }
+
+    .banner-think {
+        @include mixins.position(absolute, 28%, unset, unset, 20%, 4);
+        translate: -20% -28%;
+
+        >p {
+            @include mixins.position(absolute, 20%, unset, unset, 18%, 4);
+            @include mixins.title-main($black-color, 18px, 300);
+            font-family: 'Norican', cursive;
+
+            >span {
+                @include mixins.title-main(#ffc222, 24px, 600);
+            }
+        }
+
+        @include mixins.tablet {
+            display: none;
+        }
+    }
+
+    .banner-thunk {
+        @include mixins.position(absolute, 24%, 16%, unset, unset, 4);
+        translate: -16% -24%;
+
+        @include mixins.mobile {
+            display: none;
+        }
+
+        @include mixins.small-tablet {
+            display: none;
+        }
+    }
+
+    &:hover {
+
+        .banner-think,
+        .banner-thunk {
+            animation: moveBox 2s linear 10;
+        }
+    }
+}
+
+@keyframes moveBox {
+    0% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(20%);
+    }
+}

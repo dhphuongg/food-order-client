@@ -1,10 +1,20 @@
 <script setup></script>
-
 <template>
-  <h2>HITFOOD home page</h2>
+  <div class="main">
+    <HfSearchBannerHomePage />
+    <HfCategoryHomePage />
+    <HfHotDogdBannerHomePage />
+    <HfFoodSuggestHomePage />
+    <HfPopularFoodHomePage />
+    <HfOurCommitmentHomePage />
+  </div>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.main {
+  margin-top: $header-height;
+}
+</style>
 
 <route lang="yaml">
 name: Home

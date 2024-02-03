@@ -15,3 +15,28 @@
     @content;
   }
 }
+
+@mixin flex($justi: unset, $align: unset) {
+  display: flex;
+  justify-content: $justi;
+  align-items: $align;
+}
+
+@mixin position($type: relative, $t: unset, $r: unset, $b: unset, $l: unset, $index: unset) {
+  position: $type;
+  top: $t;
+  left: $l;
+  right: $r;
+  bottom: $b;
+  z-index: $index;
+}
+
+@mixin title-main($color: #000, $fs: 16px, $f-weight: 400, $t-align: left) {
+  color: $color;
+  text-align: $t-align;
+
+  font: {
+    size: $fs;
+    weight: $f-weight;
+  }
+}
