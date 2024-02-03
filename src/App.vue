@@ -1,5 +1,21 @@
 <script setup>
-const themeOverrides = {};
+const themeOverrides = {
+  common: {
+    baseColor: '#F06C25',
+    primaryColor: '#F06C25'
+  },
+  Input: {
+    borderRadius: '0',
+    borderHover: 'none',
+    borderFocus: 'none',
+    borderError: 'none',
+    borderHoverError: 'none',
+    borderFocusError: 'none',
+    boxShadowFocus: 'none',
+    boxShadowFocusError: 'none',
+    caretColor: 'black'
+  }
+};
 </script>
 
 <template>

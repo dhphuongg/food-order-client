@@ -12,6 +12,15 @@ body {
   overflow-x: hidden;
 }
 
+a {
+  text-decoration: none;
+  color: black;
+}
+
+p {
+  margin: 10px 0;
+}
+
 .container {
   @include mixins.flex(center);
   background-color: $white-color;
@@ -32,10 +41,6 @@ body {
   @include mixins.tablet {
     width: 90%;
   }
-}
-
-p {
-  margin: 10px 0;
 }
 
 .pad40-0-60 {

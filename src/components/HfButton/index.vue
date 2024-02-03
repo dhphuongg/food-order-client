@@ -1,11 +1,7 @@
 <script setup>
-const emit = defineEmits(['click'])
-const handleClick = () => {
-    emit('click');
-}
 </script>
 <template>
-    <button type="submit" class="btn" @click="handleClick">
+    <button type="submit" class="btn">
         <slot></slot>
     </button>
 </template>

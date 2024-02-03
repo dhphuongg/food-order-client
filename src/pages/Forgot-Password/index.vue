@@ -1,41 +1,39 @@
 <script setup>
-import { login } from '@/api/auth.api';
-import { useAuthStore } from '@/stores/auth';
-import { validateUsername, validatePassword } from '@/utils/validator';
+import { forgotPassword } from '@/api/auth.api';
+import { validateEmail } from '@/utils/validator';
 
 const message = useMessage();
-const authStore = useAuthStore();
 const router = useRouter();
 
 const loading = ref(false);
 const account = reactive({
   username: null,
-  password: null
+  email: null
 });
 const formRef = ref(null);
 const rules = {
   username: {
     required: true,
-    validator: validateUsername,
+    message: 'Vui lòng nhập tên người dùng!',
     trigger: 'blur'
   },
-  password: {
+  email: {
     required: true,
-    validator: validatePassword,
+    validator: validateEmail,
     trigger: 'blur'
   }
 };
 
-const loginHandler = () => {
+const forgotPasswordHandler = () => {
   formRef.value?.validate(async (errors) => {
     if (!errors) {
       loading.value = true;
       try {
-        const { data } = await login(account);
-        authStore.save(data.data);
-        message.success('Đăng nhập thành công. Xin chào <b>' + account.username + '</b>');
-        if (data.data.authorities[0].authority === 'ROLE_USER') router.push('/');
-        else router.push('/admin');
+        await forgotPassword(account);
+        message.success(
+          'Chúng tôi đã tạo mật khẩu mới cho tài khoản của bạn. Hãy kiểm tra Email và dùng nó để đăng nhập'
+        );
+        router.push('/login');
       } catch (err) {
         if (!!err.response) {
           message.error(err.response.data.message);
@@ -50,9 +48,9 @@ const loginHandler = () => {
 </script>
 
 <template>
-  <div class="login">
-    <n-form class="login-form" :model="account" :rules="rules" ref="formRef">
-      <h2>Đăng nhập</h2>
+  <div class="forgot-password">
+    <n-form class="forgot-password-form" :model="account" :rules="rules" ref="formRef">
+      <h2>Quên mật khẩu</h2>
       <n-form-item class="form-item" path="username" label="Tên người dùng">
         <n-input
           :theme-overrides="{
@@ -63,24 +61,21 @@ const loginHandler = () => {
           size="large"
           placeholder=""
           type="text"
+          @keydown.enter.prevent
         />
       </n-form-item>
-      <n-form-item class="form-item" path="password" label="Mật khẩu">
+      <n-form-item class="form-item" path="email" label="Địa chỉ Email">
         <n-input
           :theme-overrides="{
             border: '0'
           }"
           class="form-input"
-          v-model:value="account.password"
+          v-model:value="account.email"
           size="large"
           placeholder=""
-          type="password"
-          show-password-on="click"
+          @keydown.enter.prevent
         />
       </n-form-item>
-      <div class="forgot-password">
-        <router-link to="/forgot-password">Quên mật khẩu?</router-link>
-      </div>
       <n-button
         attr-type="submit"
         block
@@ -89,21 +84,17 @@ const loginHandler = () => {
         icon-placement="left"
         size="large"
         :loading="loading"
-        @click="loginHandler"
+        @click="forgotPasswordHandler"
       >
-        Đăng nhập
+        Gửi mật khẩu mới
       </n-button>
     </n-form>
-    <div class="register">
-      Bạn chưa có tài khoản?
-      <router-link to="/register">Đăng ký</router-link>
-    </div>
   </div>
 </template>
 
 <style scoped lang="scss">
-.login {
-  .login-form {
+.forgot-password {
+  .forgot-password-form {
     h2 {
       font-size: 32px;
       text-align: center !important;
@@ -123,14 +114,6 @@ const loginHandler = () => {
         border-bottom: 1px solid black;
       }
     }
-    .forgot-password {
-      text-align: right;
-      a {
-        &:hover {
-          color: #fd8f52;
-        }
-      }
-    }
   }
   button {
     background: linear-gradient(to bottom right, #fd8f52, #ffb056);
@@ -146,26 +129,11 @@ const loginHandler = () => {
       box-shadow: none;
     }
   }
-  .register {
-    margin-top: 35px;
-    text-align: center;
-    font-size: 14px;
-    font-family: 'Roboto', sans-serif;
-    font-weight: 500;
-    color: #a9a9a9;
-    padding-bottom: 18px;
-    a {
-      color: #fd8f52;
-      &:hover {
-        color: #04aa6d;
-      }
-    }
-  }
 }
 </style>
 
 <route lang="yaml">
-name: Login
+name: ForgotPassword
 meta:
   layout: auth
 </route>

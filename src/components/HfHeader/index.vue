@@ -1,6 +1,6 @@
 <script setup>
 import { useRouter } from 'vue-router';
-
+const show = ref(false);
 const router = useRouter();
 const handleLogin = () => {
     router.push('/login');
@@ -14,10 +14,10 @@ const handleLogin = () => {
             </router-link>
             <div class="header-menu">
                 <router-link to="/">
-                    <IconSearch size="26" class="icon" />
+                    <IconSearch size="24" class="icon" />
                 </router-link>
                 <router-link to="/login">
-                    <IconShoppingCartFilled size="26" class="icon" />
+                    <IconShoppingCartFilled size="24" class="icon" />
                 </router-link>
                 <HfButton @click="handleLogin">Đăng nhập</HfButton>
             </div>
@@ -25,38 +25,32 @@ const handleLogin = () => {
                 <router-link to="/">
                     <IconSearch size="24" class="icon mobile-search" />
                 </router-link>
-                <label for="menu-mobile">
-                    <IconMenu2 class="menu-mobile" />
-                </label>
+                <IconMenu2 class="menu-mobile" @click="show = true" />
             </div>
-            <input type="checkbox" hidden name="" id="menu-mobile">
-            <label for="menu-mobile" class="overlay"></label>
-            <div class="header-menu-mobile">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
-                    <img style="width: 40%;" src="@/assets/images/logo.png" alt="logo" class="header-logo">
-                    <label for="menu-mobile">
-                        <IconX />
-                    </label>
-                </div>
-                <hr>
-                <ul>
-                    <li>
-                        <router-link to="/">
-                            <IconShoppingCartFilled size="18" class="icon-menu-mobile" />Giỏ hàng
-                        </router-link>
-                    </li>
-                    <li>
-                        <router-link to="/login">
-                            <IconLogin size="18" class="icon-menu-mobile" />Đăng nhập
-                        </router-link>
-                    </li>
-                    <li>
-                        <router-link to="/">
-                            <IconUser size="18" class="icon-menu-mobile" />Đăng ký
-                        </router-link>
-                    </li>
-                </ul>
-            </div>
+            <n-drawer v-model:show="show" width="70%">
+                <n-drawer-content closable>
+                    <template #header>
+                        <img src="@/assets/images/logo.png" alt="logo" width="36%">
+                    </template>
+                    <ul class="mobile-menu">
+                        <li>
+                            <router-link to="/">
+                                <IconShoppingCartFilled size="18" class="icon-menu-mobile" />Giỏ hàng
+                            </router-link>
+                        </li>
+                        <li>
+                            <router-link to="/login">
+                                <IconLogin size="18" class="icon-menu-mobile" />Đăng nhập
+                            </router-link>
+                        </li>
+                        <li>
+                            <router-link to="/">
+                                <IconUser size="18" class="icon-menu-mobile" />Đăng ký
+                            </router-link>
+                        </li>
+                    </ul>
+                </n-drawer-content>
+            </n-drawer>
         </div>
     </header>
 </template>
@@ -65,6 +59,7 @@ const handleLogin = () => {
 @use '@/styles/_mixins' as mixins;
 
 .header {
+    width: 100% !important;
     height: $header-height;
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
     @include mixins.position(fixed, $t: 0, $r: 0, $l: 0, $index: 10);
@@ -81,65 +76,19 @@ const handleLogin = () => {
         }
     }
 
-    a {
-        color: $black-color;
-    }
-
-    label {
-        cursor: pointer;
-
-        &:hover {
-            color: $primary-color;
-        }
-    }
-
     &-logo {
         width: 92px;
 
         @include mixins.mobile {
-            width: 30%;
+            width: 60px;
         }
-    }
-
-    &-menu-mobile {
-        @include mixins.position(fixed, $t: 0, $r: 0, $l: unset, $b: 0, $index: 13);
-        background-color: $white-color;
-        width: 70%;
-        padding: 12px;
-        display: none;
-
-        ul {
-            list-style: none;
-            margin-top: 12px;
-        }
-
-        li {
-            padding: 8px;
-            @include mixins.flex($align: center);
-            font-size: 16px;
-
-            .icon-menu-mobile {
-                margin-right: 6px;
-            }
-
-            &:hover {
-                background-color: cornflowerblue;
-                color: $white-color;
-                border-radius: 4px;
-            }
-        }
-
-    }
-
-    .nav-mobile .icon {
-        margin-right: 20px;
     }
 
     .icon,
     .menu-mobile {
-        margin-right: 30px;
-        cursor: pointer;
+        margin-right: 20px;
         transition: all 0.2s linear;
+        cursor: pointer;
 
         &:hover {
             color: $primary-color;
@@ -152,6 +101,7 @@ const handleLogin = () => {
     }
 
     .nav-mobile {
+        align-items: start;
         display: none;
         margin: 0;
 
@@ -159,33 +109,31 @@ const handleLogin = () => {
             display: flex;
         }
     }
+}
 
-    .overlay {
-        @include mixins.position(fixed, $t: 0, $r: 0, $l: 0, $b: 0, $index: 12);
-        background-color: $black-color;
-        opacity: 0.4;
-        display: none;
-    }
+.mobile-menu {
+    list-style: none;
 
-    input[type=checkbox]:checked~.overlay,
-    input[type=checkbox]:checked~.header-menu-mobile {
-        display: block;
-    }
+    li {
+        padding: 8px 4px;
 
-    input[type=checkbox]:checked~.header-menu-mobile {
-        animation: move 0.3s linear 1;
-    }
-
-    @keyframes move {
-        0% {
-            transform: translateX(100%);
-            opacity: 0;
+        a {
+            @include mixins.flex($align: center);
         }
 
-        100% {
-            transform: translateX(0);
-            opacity: 1;
+        &:hover {
+            background-color: cornflowerblue;
+            border-radius: 4px;
+
+            a {
+                color: $white-color;
+
+            }
         }
+    }
+
+    .icon-menu-mobile {
+        margin-right: 6px;
     }
 }
 </style>
