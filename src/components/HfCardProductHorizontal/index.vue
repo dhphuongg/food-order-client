@@ -1,15 +1,30 @@
+<script setup>
+defineProps({
+  product: {
+    type: Object,
+    default(rawProps) {
+      return {
+        image: '',
+        name: '',
+        price: 0,
+        address: ''
+      };
+    }
+  }
+});
+</script>
 <template>
   <div class="horizontal-card">
     <div>
       <div class="horizontal-card-img">
         <img
-          src="https://news.mit.edu/sites/default/files/styles/news_article__image_gallery/public/images/202312/MIT_Food-Diabetes-01_0.jpg?itok=Mp8FVJkC"
+          :src="product.image"
           alt=""
         />
       </div>
       <div class="horizontal-card-content">
         <div>
-          <span>Bún chả cá</span>
+          <span>{{ product.name }}</span>
           <div class="card-icon">
             <IconStarFilled color="#ffc222" size="15" />
             <IconStarFilled color="#ffc222" size="15" />
@@ -17,8 +32,8 @@
             <IconStarFilled color="#ffc222" size="15" />
             <IconStarFilled color="#ffc222" size="15" />
           </div>
-          <p>298 đường Cầu Diễn, Phường Minh Khai, Bắc Từ Liêm, Hà Nội</p>
-          <h5>50000 VND</h5>
+          <p>{{ product.address }}</p>
+          <h5>{{ product.price }} VND</h5>
         </div>
         <div>
           <button class="orderBtn">
@@ -30,8 +45,6 @@
   </div>
 </template>
 <style scoped lang="scss">
-@import "../../styles/mixins.scss";
-
 .horizontal-card {
   cursor: pointer;
   width: 48.5%;
@@ -124,8 +137,8 @@
     }
 
     span {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
-        Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
+        'Open Sans', 'Helvetica Neue', sans-serif;
       margin: 0;
       color: #1e1d23;
       line-height: 0;
@@ -142,8 +155,8 @@
     h5 {
       font-size: 15px;
       color: #ffc222;
-      font-family: gilroy, helveticaneue-light, helvetica neue light,
-        helvetica neue, Helvetica, Arial, lucida grande, sans-serif;
+      font-family: gilroy, helveticaneue-light, helvetica neue light, helvetica neue, Helvetica,
+        Arial, lucida grande, sans-serif;
       margin: 0;
       line-height: 0;
       font-weight: 700;

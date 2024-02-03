@@ -143,7 +143,6 @@ onBeforeMount(async () => {
 </template>
 
 <style scoped lang="scss">
-@import "../../styles/mixins";
 
 .detail-container {
   display: flex;
@@ -547,5 +546,4 @@ iframe {
 <route lang="yaml">
     name: ProductDetail
     meta:
-    path: '/product-detail/:id'
 </route>

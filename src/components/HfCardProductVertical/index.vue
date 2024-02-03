@@ -1,23 +1,35 @@
+<script setup>
+defineProps({
+  product: {
+    type: Object,
+    default(rawProps) {
+      return {
+        image: '',
+        name: '',
+        price: 0,
+        address: ''
+      };
+    }
+  }
+});
+</script>
 <template>
   <div class="card">
     <div class="box">Đang hoạt động</div>
     <div class="imgProduct">
       <div>
-        <img
-          src="https://news.mit.edu/sites/default/files/styles/news_article__image_gallery/public/images/202312/MIT_Food-Diabetes-01_0.jpg?itok=Mp8FVJkC"
-          alt=""
-        />
+        <img :src="product.image" alt="" />
       </div>
     </div>
     <div class="card-content">
       <div>
         <div class="card-content-nameproduct">
-          <span>Bún chả cá</span>
+          <span>{{ product.name }}</span>
         </div>
-        <p>298 đường Cầu Diễn, Phường Minh Khai, Bắc Từ Liêm, Hà Nội</p>
+        <p>{{ product.address }}</p>
         <div class="productItem">
           <div style="display: flex, alignItems: center">
-            <h3>50000 VND</h3>
+            <h3>{{ product.price }} VND</h3>
           </div>
           <div>
             <button class="orderBtn">
@@ -30,7 +42,6 @@
   </div>
 </template>
 <style scoped lang="scss">
-@import '../../styles/mixins.scss';
 .card {
   min-height: 486px;
   overflow: hidden;
@@ -38,8 +49,8 @@
   border-radius: 30px !important;
   padding: 10px;
   background: #fff;
-  font-family: gilroy, helveticaneue-light, helvetica neue light, helvetica neue,
-    Helvetica, Arial, lucida grande, sans-serif;
+  font-family: gilroy, helveticaneue-light, helvetica neue light, helvetica neue, Helvetica, Arial,
+    lucida grande, sans-serif;
   transition: all ease 0.35s;
   padding-bottom: 24px;
   max-width: 280px;
@@ -57,8 +68,8 @@
     color: #fff;
     padding: 8px 10px 10px;
     z-index: 5;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
-      Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
+      'Open Sans', 'Helvetica Neue', sans-serif;
   }
 
   .imgProduct {
@@ -86,21 +97,21 @@
         display: flex;
 
         @include mobile {
-            position: absolute;
-            top: 24%;
-            left: 24%;
+          position: absolute;
+          top: 24%;
+          left: 24%;
         }
 
         @include tablet {
-            position: absolute;
-            top: 24%;
-            left: 21%;
+          position: absolute;
+          top: 24%;
+          left: 21%;
         }
       }
     }
 
     &::after {
-      content: "";
+      content: '';
       width: 100%;
       height: 50%;
       border-radius: 20px;
@@ -126,16 +137,16 @@
       color: #1e1d23;
       font-weight: 500;
       overflow: hidden;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
-        Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
+        'Open Sans', 'Helvetica Neue', sans-serif;
       display: block;
     }
 
     p {
       color: #808080;
       margin: 10px 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
-        Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
+        'Open Sans', 'Helvetica Neue', sans-serif;
       font-size: 14px;
     }
   }
