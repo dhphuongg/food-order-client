@@ -5,5 +5,5 @@ export const productApi = {
   getInfo: async (id) =>
     api.get(`${ApiConstant.product}/${id}`),
   getListNewProduct: async () =>
-      await api.get(`${ApiConstant.product}`),
+    api.get(`${ApiConstant.product}`),
 };
