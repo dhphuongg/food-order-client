@@ -1,5 +1,4 @@
 <script setup>
-import router from '@/router'
 defineProps({
   product: {
     type: Object,

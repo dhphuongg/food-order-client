@@ -1,8 +1,8 @@
 <template>
-  <div className="cart-container cart">
+  <div class="cart-container cart">
     <div>
       <h1>Giỏ Hàng</h1>
-      <div className="cart-table">
+      <div class="cart-table">
         <table cellPadding="12px 16px" cellSpacing="0">
           <thead>
             <tr>
@@ -25,14 +25,14 @@
                   alt=""
                 />
               </td>
-              <td className="cart-product-name">Bánh mỳ</td>
+              <td class="cart-product-name">Bánh mỳ</td>
               <td>50000 đ</td>
-              <td className="cart-items-quantity">
+              <td class="cart-items-quantity">
                 <button>-</button>
                 <input type="text" value="1" />
                 <button>+</button>
               </td>
-              <td className="cart-product-price">100000 đ</td>
+              <td class="cart-product-price">100000 đ</td>
             </tr>
             <tr key="">
               <td>
@@ -44,19 +44,19 @@
                   alt=""
                 />
               </td>
-              <td className="cart-product-name">Bánh mỳ</td>
+              <td class="cart-product-name">Bánh mỳ</td>
               <td>50000 đ</td>
-              <td className="cart-items-quantity">
+              <td class="cart-items-quantity">
                 <button>-</button>
                 <input type="text" value="1" />
                 <button>+</button>
               </td>
-              <td className="cart-product-price">100000 đ</td>
+              <td class="cart-product-price">100000 đ</td>
             </tr>
           </tbody>
         </table>
       </div>
-      <div className="cart-pay">
+      <div class="cart-pay">
         <hr />
         <div>
           <p>Tổng tiền: <span>100000 đ</span></p>

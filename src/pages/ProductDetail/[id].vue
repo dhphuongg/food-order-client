@@ -1,12 +1,11 @@
 <script setup>
 import { getInfo } from '@/api/product.api';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { getAllProduct } from '@/api/product.api';
-import router from '@/router';
 const loading = ref(false);
 const listProduct = ref([]);
-
 const route = useRoute();
+const router = useRouter();
 const productInfo = ref({});
 const handleGetProductInfo = async () => {
   try {

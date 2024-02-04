@@ -1,6 +1,6 @@
 <script setup>
 import { getAllProduct } from '@/api/product.api';
-import router from '@/router';
+import { useRouter } from 'vue-router';
 const loading = ref(false);
 const listProduct = ref([]);
 onBeforeMount(() => {
@@ -18,6 +18,7 @@ const getProducts = async () => {
     console.log(err);
   }
 };
+const router = useRouter();
 const handleClickShowProduct = (id) => {
   router.push(`/productdetail/${id}`);
 };
