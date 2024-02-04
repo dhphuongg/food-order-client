@@ -1,17 +1,20 @@
 <script setup>
+import router from '@/router'
 defineProps({
   product: {
     type: Object,
     default(rawProps) {
       return {
+        id: '',
         image: '',
         name: '',
         price: 0,
-        address: ''
+        description: ''
       };
     }
   }
 });
+
 </script>
 <template>
   <div class="card">
@@ -26,7 +29,7 @@ defineProps({
         <div class="card-content-nameproduct">
           <span>{{ product.name }}</span>
         </div>
-        <p>{{ product.address }}</p>
+        <p class="product-description">{{ product.description }}</p>
         <div class="productItem">
           <div style="display: flex, alignItems: center">
             <h3>{{ product.price }} VND</h3>
@@ -144,10 +147,12 @@ defineProps({
 
     p {
       color: #808080;
-      margin: 10px 0;
+      margin: 0 0 15px 0;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
         'Open Sans', 'Helvetica Neue', sans-serif;
       font-size: 14px;
+      height: 20px;
+      overflow: hidden;
     }
   }
 

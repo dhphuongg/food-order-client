@@ -4,5 +4,6 @@ export const ApiConstant = {
     forgotPassword: 'auth/forget-password',
     register: 'auth/register'
   },
-  product: "product"
+  product: "product",
+  category: "category"
 };

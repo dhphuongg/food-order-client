@@ -1,9 +1,11 @@
 <script setup>
+import router from '@/router';
 defineProps({
   product: {
     type: Object,
     default(rawProps) {
       return {
+        id: '',
         image: '',
         name: '',
         price: 0,
@@ -17,10 +19,7 @@ defineProps({
   <div class="horizontal-card">
     <div>
       <div class="horizontal-card-img">
-        <img
-          :src="product.image"
-          alt=""
-        />
+        <img :src="product.image" alt="" />
       </div>
       <div class="horizontal-card-content">
         <div>
@@ -32,7 +31,7 @@ defineProps({
             <IconStarFilled color="#ffc222" size="15" />
             <IconStarFilled color="#ffc222" size="15" />
           </div>
-          <p>{{ product.address }}</p>
+          <p>{{ product.description }}</p>
           <h5>{{ product.price }} VND</h5>
         </div>
         <div>
@@ -53,17 +52,18 @@ defineProps({
   border: 1px solid #e5e5e5;
   margin-top: 30px;
   min-height: 180px;
+  z-index: 5;
   @include mobile {
-    width: 84%;
+    width: 100%;
     margin: 16px auto;
   }
   @include small-tablet {
-    width: 84%;
+    width: 100%;
     margin: 16px auto;
   }
 
   @include tablet {
-    width: 46%;
+    width: 47%;
     margin: 16px 0;
   }
 
@@ -74,6 +74,9 @@ defineProps({
     border-radius: 20px;
     padding: 10px 16px;
     display: flex;
+    @include mobile {
+      flex-direction: column;
+    }
     align-items: center;
     min-height: 180px;
   }
@@ -94,12 +97,12 @@ defineProps({
     }
 
     @include mobile {
-      width: 180px !important;
+      width: 100px !important;
       height: 85px;
       border-radius: 50%;
 
       img {
-        width: 120%;
+        width: 100%;
         transition: all ease 1s;
       }
     }
@@ -186,6 +189,9 @@ defineProps({
 
       &:hover {
         background-color: #f06c25;
+      }
+      @include mobile {
+        bottom: 10px !important;
       }
     }
   }

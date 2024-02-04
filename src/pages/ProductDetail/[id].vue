@@ -1,36 +1,78 @@
 <script setup>
-import { productApi } from "@/api/product.api";
-import { useRoute } from 'vue-router'
-const { getInfo } = productApi;
+import { getInfo } from '@/api/product.api';
+import { useRoute } from 'vue-router';
+import { getAllProduct } from '@/api/product.api';
+import router from '@/router';
+const loading = ref(false);
+const listProduct = ref([]);
+
 const route = useRoute();
-onBeforeMount(async () => {
-  console.log("helo", route);
-  const id = route?.params?.id;
-  let res = await getInfo(id);
-  if (res) console.log(res);
-})
+const productInfo = ref({});
+const handleGetProductInfo = async () => {
+  try {
+    const id = route?.params?.id;
+    let res = await getInfo(id);
+    if (res) {
+      productInfo.value = res.data;
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+onBeforeMount(() => {
+  handleGetProductInfo();
+  getProducts();
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+});
+const getProducts = async () => {
+  loading.value = true;
+  try {
+    let res = await getAllProduct();
+    if (res && res.data) {
+      listProduct.value = res.data.items;
+      loading.value = false;
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+const handleClickShowProduct = (id) => {
+  router.push(`/productdetail/${id}`);
+};
+watch(
+  () => route.params.id,
+  async (newId, oldId) => {
+    if (newId !== oldId) {
+      await handleGetProductInfo();
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
+  }
+);
 </script>
 <template>
   <div class="detail detail-container">
     <div>
       <div class="detail-product">
         <div class="detail-product-image">
-          <img
-            src="https://gcs.tripi.vn/public-tripi/tripi-feed/img/472187qvk/bi-quyet-lam-bun-be-be-ngon-tai-nha_9"
-            alt=""
-          />
+          <img :src="productInfo.image" alt="" />
         </div>
         <div class="detail-product-infor">
-          <h3>Bún bề bề</h3>
+          <h3>{{ productInfo.name }}</h3>
           <span class="product-rating"><IconStarFilled color="#ffc222" /></span>
           <span class="product-rating"><IconStarFilled color="#ffc222" /></span>
           <span class="product-rating"><IconStarFilled color="#ffc222" /></span>
           <span class="product-rating"><IconStarFilled color="#ffc222" /></span>
           <span class="product-rating"><IconStarFilled color="#ffc222" /></span>
           <br />
-          <span class="shop-address">Bắc Từ Liêm, Hà Nội</span> <br />
+          <span class="shop-address">{{ productInfo.description }}</span> <br />
           <div class="detail-product-infor-price">
-            <span>50000 VND</span>
+            <span>{{ productInfo.price }} VND</span>
           </div>
           <hr />
           <div class="detail-product-infor-number">
@@ -46,9 +88,7 @@ onBeforeMount(async () => {
           <hr />
           <br />
           <div class="detail-product-add">
-            <button class="detail-product-add-to-cart">
-              Thêm vào giỏ hàng
-            </button>
+            <button class="detail-product-add-to-cart">Thêm vào giỏ hàng</button>
             <button class="detail-product-add-to-buy">Đặt hàng</button>
           </div>
           <br />
@@ -79,47 +119,28 @@ onBeforeMount(async () => {
         <div>
           <div class="title-description">Mô Tả</div>
           <p>
-            Bún bề bề, một món ăn truyền thống của miền Trung Việt Nam, là sự
-            kết hợp tuyệt vời giữa sợi bún mềm mịn và hương vị đặc trưng của
-            loài hải sản bề bề tươi ngon. Sợi bún được nấu chín vừa đủ, giữ
-            nguyên độ dai mềm, tạo nền tảng cho món ăn đầy hấp dẫn này. Bề bề,
-            với thịt trắng tinh khiết và vị ngọt tự nhiên, được chế biến thành
-            những miếng nhỏ, thêm vào bát bún tạo nên sự phong phú về hương vị.
-            Bên cạnh đó, món bún bề bề còn kèm theo một số nguyên liệu khác như
-            rau sống tươi mát, hành phi giòn thơm, và nước mắm chua ngọt được
-            pha chế đậm đà. Đến khi cắn miếng bún thơm ngon, bạn sẽ cảm nhận
-            được sự hòa quyện của hương vị độc đáo. Vị ngọt tự nhiên của thịt bề
-            bề, hòa quyện cùng vị chua, mặn và ngọt của nước mắm, tạo nên một
-            trải nghiệm ẩm thực tuyệt vời. Bên cạnh đó, sự tươi mát của rau sống
-            và hành phi làm tăng thêm sự đa dạng và hấp dẫn cho món ăn này.
             <br />
-            Bún tôm, một món ăn truyền thống của miền Nam Việt Nam, được biết
-            đến với sự tươi ngon và hương vị độc đáo. Sợi bún mềm mịn, kết hợp
-            với tôm tươi ngon, tạo nên một món ăn hấp dẫn và đậm đà. Tôm là nhân
-            vật chính trong món bún tôm. Tôm tươi được chế biến thành những
-            miếng nhỏ, thêm vào bát bún tạo nên sự phong phú về hương vị. Vị
-            ngọt tự nhiên của tôm hòa quyện với vị chua, mặn và ngọt của nước
-            mắm, tạo nên một hương vị độc đáo và hấp dẫn. Bên cạnh đó, món bún
-            tôm còn kèm theo các nguyên liệu khác như rau sống tươi mát, hành
-            phi giòn thơm và các loại gia vị như ớt, tỏi, và nước mắm chua ngọt.
-            Tất cả các thành phần này tạo nên sự cân đối và hài hòa về hương vị
-            trong món ăn. Khi thưởng thức món bún tôm, bạn sẽ cảm nhận được sự
-            tươi mát và đậm đà của hương vị. Sợi bún mềm mịn kết hợp với tôm
-            tươi ngon, rau sống tươi mát và hành phi giòn thơm tạo nên một trải
+            Bún tôm, một món ăn truyền thống của miền Nam Việt Nam, được biết đến với sự tươi ngon
+            và hương vị độc đáo. Sợi bún mềm mịn, kết hợp với tôm tươi ngon, tạo nên một món ăn hấp
+            dẫn và đậm đà. Tôm là nhân vật chính trong món bún tôm. Tôm tươi được chế biến thành
+            những miếng nhỏ, thêm vào bát bún tạo nên sự phong phú về hương vị. Vị ngọt tự nhiên của
+            tôm hòa quyện với vị chua, mặn và ngọt của nước mắm, tạo nên một hương vị độc đáo và hấp
+            dẫn. Bên cạnh đó, món bún tôm còn kèm theo các nguyên liệu khác như rau sống tươi mát,
+            hành phi giòn thơm và các loại gia vị như ớt, tỏi, và nước mắm chua ngọt. Tất cả các
+            thành phần này tạo nên sự cân đối và hài hòa về hương vị trong món ăn. Khi thưởng thức
+            món bún tôm, bạn sẽ cảm nhận được sự tươi mát và đậm đà của hương vị. Sợi bún mềm mịn
+            kết hợp với tôm tươi ngon, rau sống tươi mát và hành phi giòn thơm tạo nên một trải
             nghiệm ẩm thực tuyệt vời và đáng nhớ.
             <br />
-            Mỳ trộn full topping, một món ăn đường phố phổ biến và thú vị, đang
-            làm mưa làm gió trong thế giới ẩm thực hiện nay. Mỳ trắng mềm mịn
-            được trộn đều với các loại topping đa dạng, tạo nên một sự kết hợp
-            hài hòa giữa vị ngọt, mặn, chua và cay. Khi bạn nhìn vào mỳ trộn
-            full topping, bạn sẽ ngạc nhiên bởi sự phong phú của các loại
-            topping đa dạng. Từ thịt gà nướng mềm mịn, xúc xích thơm ngon, đậu
-            phụ chiên giòn, đến rau sống tươi mát, hành phi giòn thơm và chấm
-            nước mắm chua ngọt, tất cả được trộn đều với mỳ tạo nên một tác phẩm
-            ẩm thực đẹp mắt và hấp dẫn. Khi bạn thưởng thức mỳ trộn full
-            topping, mỗi miếng mỳ mềm mịn sẽ mang đến một trải nghiệm đa vị
-            tuyệt vời. Vị ngọt tự nhiên của thịt gà, vị thơm của xúc xích, vị
-            giòn của đậu phụ
+            Mỳ trộn full topping, một món ăn đường phố phổ biến và thú vị, đang làm mưa làm gió
+            trong thế giới ẩm thực hiện nay. Mỳ trắng mềm mịn được trộn đều với các loại topping đa
+            dạng, tạo nên một sự kết hợp hài hòa giữa vị ngọt, mặn, chua và cay. Khi bạn nhìn vào mỳ
+            trộn full topping, bạn sẽ ngạc nhiên bởi sự phong phú của các loại topping đa dạng. Từ
+            thịt gà nướng mềm mịn, xúc xích thơm ngon, đậu phụ chiên giòn, đến rau sống tươi mát,
+            hành phi giòn thơm và chấm nước mắm chua ngọt, tất cả được trộn đều với mỳ tạo nên một
+            tác phẩm ẩm thực đẹp mắt và hấp dẫn. Khi bạn thưởng thức mỳ trộn full topping, mỗi miếng
+            mỳ mềm mịn sẽ mang đến một trải nghiệm đa vị tuyệt vời. Vị ngọt tự nhiên của thịt gà, vị
+            thơm của xúc xích, vị giòn của đậu phụ
           </p>
           <br />
 
@@ -137,17 +158,36 @@ onBeforeMount(async () => {
         </div>
       </div>
       <hr />
-      <div class="detail-similar">Món ăn tương tự</div>
+      <div class="detail-similar">
+        <n-carousel
+          class="carousel-category"
+          autoplay="true"
+          show-arrow="true"
+          interval="3000"
+          :space-between="20"
+          :loop="true"
+          :slides-per-view="4"
+          transition-style="{duration: '1000ms'}"
+          draggable
+        >
+          <hf-card-product-vertical
+            @click="handleClickShowProduct(item.id)"
+            v-for="item in listProduct"
+            :key="item.id"
+            :product="item"
+          />
+        </n-carousel>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped lang="scss">
-
 .detail-container {
   display: flex;
   align-items: center;
   justify-content: space-around;
+  margin-top: 100px;
 }
 
 .detail {
@@ -155,8 +195,8 @@ onBeforeMount(async () => {
     width: 1200px;
 
     h1 {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
-        Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif !important;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
+        'Open Sans', 'Helvetica Neue', sans-serif !important;
     }
     .detail-similar {
       margin-bottom: 60px;
@@ -225,8 +265,8 @@ onBeforeMount(async () => {
 
   &-infor {
     width: auto;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
-      Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
+      'Open Sans', 'Helvetica Neue', sans-serif;
 
     .shop-address {
       font-size: 14px;
@@ -240,8 +280,8 @@ onBeforeMount(async () => {
     }
 
     & h3 {
-      font-size: gilroy, helveticaneue-light, helvetica neue light,
-        helvetica neue, Helvetica, Arial, lucida grande, sans-serif;
+      font-size: gilroy, helveticaneue-light, helvetica neue light, helvetica neue, Helvetica, Arial,
+        lucida grande, sans-serif;
       color: #1e1d23;
       font-size: 42px;
       line-height: 60px;
@@ -307,8 +347,8 @@ onBeforeMount(async () => {
       span {
         color: #ffc222 !important;
         font-weight: 600;
-        font-family: gilroy, helveticaneue-light, helvetica neue light,
-          helvetica neue, Helvetica, Arial, lucida grande, sans-serif;
+        font-family: gilroy, helveticaneue-light, helvetica neue light, helvetica neue, Helvetica,
+          Arial, lucida grande, sans-serif;
       }
     }
   }
@@ -334,7 +374,7 @@ onBeforeMount(async () => {
       color: white;
       border: none;
       font-size: 16px;
-      font-family: "Roboto", sans-serif;
+      font-family: 'Roboto', sans-serif;
       cursor: pointer;
 
       @include mobile {
@@ -349,7 +389,7 @@ onBeforeMount(async () => {
       color: white;
       border: none;
       font-size: 16px;
-      font-family: "Roboto", sans-serif;
+      font-family: 'Roboto', sans-serif;
       cursor: pointer;
 
       @include mobile {
@@ -419,8 +459,8 @@ li {
     > div {
       padding: 10px 36px;
       margin: 0 auto 24px;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
-        Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
+        'Open Sans', 'Helvetica Neue', sans-serif;
       font-size: 24px;
       font-weight: 700;
       border-radius: 8px;
@@ -429,8 +469,8 @@ li {
 
     p {
       color: #808080;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
-        Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
+        'Open Sans', 'Helvetica Neue', sans-serif;
       line-height: 32px;
       padding: 0 20px;
     }

@@ -1,9 +1,10 @@
 import { api } from "./index";
 import { ApiConstant } from "@/constant/api.constant";
 
-export const productApi = {
+const productApi = () => ({
   getInfo: async (id) =>
     api.get(`${ApiConstant.product}/${id}`),
-  getListNewProduct: async () =>
+  getAllProduct: async () =>
     api.get(`${ApiConstant.product}`),
-};
+});
+export const { getAllProduct, getInfo } = productApi();
