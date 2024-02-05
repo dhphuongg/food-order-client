@@ -23,6 +23,7 @@ defineProps({
       <div class="horizontal-card-content">
         <div>
           <router-link
+            class="custom-center"
             v-if="product && product.id"
             :to="{ name: 'ProductDetail', params: { id: product.id } }"
           >
@@ -205,5 +206,9 @@ defineProps({
       transform: scale(1.1);
     }
   }
+}
+.custom-center {
+  display: flex;
+  justify-content: center;
 }
 </style>

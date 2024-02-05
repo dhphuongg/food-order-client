@@ -13,15 +13,17 @@ defineProps({
 });
 </script>
 <template>
-  <div class="categoryItem" key="1">
-    <div class="categoryImage">
-      <img :src="category.image" alt="" />
+  <router-link to="/" class="custom-center">
+    <div class="categoryItem" key="1">
+      <div class="categoryImage">
+        <img :src="category.image" alt="" />
+      </div>
+      <div class="categoryContent">
+        <h4>{{ category.name }}</h4>
+        <p>{{ category.quantity }} sản phẩm</p>
+      </div>
     </div>
-    <div class="categoryContent">
-      <h4>{{ category.name }}</h4>
-      <p>{{ category.quantity }} sản phẩm</p>
-    </div>
-  </div>
+  </router-link>
 </template>
 <style lang="scss">
 .carousel-img {
@@ -89,5 +91,9 @@ defineProps({
       transform: scale(1.4);
     }
   }
+}
+.custom-center {
+  display: flex;
+  justify-content: center;
 }
 </style>

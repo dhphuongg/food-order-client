@@ -14,10 +14,6 @@ const getProducts = async () => {
     console.log(err);
   }
 };
-// const router = useRouter();
-// const handleClickShowProduct = (id) => {
-//   router.push(`/productdetail/${id}`);
-// };
 </script>
 <template>
   <div class="container popular-food">

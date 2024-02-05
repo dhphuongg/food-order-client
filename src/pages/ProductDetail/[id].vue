@@ -4,6 +4,29 @@ import { useRoute, useRouter } from 'vue-router';
 import { useLoadingBar } from 'naive-ui';
 const loadingBar = useLoadingBar();
 import { getAllProduct } from '@/api/product.api';
+import { onBeforeMount } from 'vue';
+const numberSlides = ref(4);
+const updateNumberSlides = () => {
+  const width = window.innerWidth;
+  if (width < 700) {
+    numberSlides.value = 1;
+  } else if (width < 870) {
+    numberSlides.value = 2;
+  } else if (width < 1200) {
+    numberSlides.value = 3;
+  } else {
+    numberSlides.value = 4;
+  }
+};
+onMounted(() => {
+  window.addEventListener('resize', updateNumberSlides);
+});
+onUnmounted(() => {
+  window.removeEventListener('resize', updateNumberSlides);
+});
+onBeforeMount(() => {
+  updateNumberSlides();
+});
 const listProduct = ref([]);
 const route = useRoute();
 const productInfo = ref({});
@@ -165,10 +188,20 @@ watch(
           :interval="3000"
           :space-between="20"
           :loop="true"
-          :slides-per-view="4"
+          :slides-per-view="numberSlides"
           draggable
         >
           <hf-card-product-vertical v-for="item in listProduct" :key="item.id" :product="item" />
+          <template #dots="{ total, currentIndex, to }">
+            <ul class="custom-dots">
+              <li
+                v-for="index of total"
+                :key="index"
+                :class="{ ['is-active']: currentIndex === index - 1 }"
+                @click="to(index - 1)"
+              />
+            </ul>
+          </template>
         </n-carousel>
       </div>
     </div>
@@ -193,6 +226,7 @@ watch(
     }
     .detail-similar {
       margin-bottom: 60px;
+      padding-bottom: 30px;
     }
   }
 }
@@ -573,6 +607,33 @@ iframe {
     width: 100% !important;
     height: 300px !important;
   }
+}
+.n-carousel {
+  padding-bottom: 50px;
+}
+.custom-dots {
+  display: flex;
+  margin: 0 auto;
+  padding: 0;
+  position: absolute;
+  bottom: 0px;
+  left: 0;
+}
+
+.custom-dots li {
+  display: inline-block;
+  width: 12px;
+  height: 4px;
+  margin: 0 3px;
+  border-radius: 4px;
+  background-color: rgba(4, 129, 23, 0.366);
+  transition: width 0.3s, background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.custom-dots li.is-active {
+  width: 40px;
+  background: green;
 }
 </style>
 

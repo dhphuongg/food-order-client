@@ -15,7 +15,11 @@ defineProps({
 });
 </script>
 <template>
-  <router-link  v-if="product && product.id" :to="{ name: 'ProductDetail', params: { id: product.id } }">
+  <router-link
+    class="custom-center"
+    v-if="product && product.id"
+    :to="{ name: 'ProductDetail', params: { id: product.id } }"
+  >
     <div class="card">
       <div class="box">Đang hoạt động</div>
       <div class="imgProduct">
@@ -218,5 +222,9 @@ defineProps({
   display: flex;
   height: 80px !important;
   align-items: center;
+}
+.custom-center {
+  display: flex;
+  justify-content: center;
 }
 </style>
