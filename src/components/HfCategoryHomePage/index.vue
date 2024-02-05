@@ -55,7 +55,6 @@ const getCategories = async () => {
         :space-between="20"
         :loop="true"
         :slides-per-view="numberSlides"
-        transition-style="{duration: '1000ms'}"
         draggable
       >
         <hf-card-category v-for="item in listCategory" :key="item.id" :category="item" />

@@ -1,67 +1,140 @@
+<script setup>
+import { IconTrash } from '@tabler/icons-vue';
+const data = reactive([
+  {
+    key: 0,
+    image:
+      'https://www.shutterstock.com/image-photo/banh-mi-vietnamese-word-bread-600nw-1954013653.jpg',
+    name: 'John Brown',
+    price: 32,
+    quantity: 1
+  },
+  {
+    key: 1,
+    image:
+      'https://www.shutterstock.com/image-photo/banh-mi-vietnamese-word-bread-600nw-1954013653.jpg',
+    name: 'Jim Green',
+    price: 42,
+    quantity: 1
+  },
+  {
+    key: 2,
+    image:
+      'https://www.shutterstock.com/image-photo/banh-mi-vietnamese-word-bread-600nw-1954013653.jpg',
+    name: 'Joe Black',
+    price: 32,
+    quantity: 2
+  }
+]);
+const columns = reactive([
+  {
+    title: 'Xóa',
+    key: 'actions',
+    align: 'center',
+    render(row) {
+      return h(IconTrash, {
+        onClick: () => console.log(row)
+      });
+    }
+  },
+  {
+    title: 'Ảnh',
+    key: 'image',
+    align: 'center',
+    render(row) {
+      return h('img', {
+        src: row.image,
+        style: {
+          width: '70px',
+          height: '50px'
+        },
+        onClick: () => console.log(row)
+      });
+    }
+  },
+  {
+    title: 'Tên sản phẩm',
+    key: 'name',
+    align: 'center',
+    render(row) {
+      return h(
+        'span',
+        {
+          style: {
+            color: 'green'
+          }
+        },
+        row.name
+      );
+    }
+  },
+  {
+    title: 'Giá',
+    key: 'price',
+    align: 'center'
+  },
+  {
+    title: 'Số lượng',
+    key: 'quantity',
+    align: 'center',
+    render(row) {
+      return h('div', [
+        h(
+          'button',
+          {
+            onClick: () => console.log('Decrease')
+          },
+          '-'
+        ),
+        h('input', {
+          style: {
+            border: 'none',
+            width: '40px',
+            textAlign: 'center'
+          },
+          type: 'text',
+          value: row.quantity
+        }),
+        h(
+          'button',
+          {
+            onClick: () => console.log('Increase')
+          },
+          '+'
+        )
+      ]);
+    }
+  },
+  {
+    title: 'Thành tiền',
+    key: 'address',
+    align: 'center',
+    render(row) {
+      return h(
+        'span',
+        {
+          style: {
+            color: 'red'
+          }
+        },
+        row.price * row.quantity + ' đ'
+      );
+    }
+  }
+]);
+</script>
 <template>
   <div class="cart-container cart">
     <div>
       <h1>Giỏ Hàng</h1>
-      <div class="cart-table">
-        <table cellPadding="12px 16px" cellSpacing="0">
-          <thead>
-            <tr>
-              <th>Xóa</th>
-              <th>Ảnh</th>
-              <th>Sản Phẩm</th>
-              <th>Giá</th>
-              <th>Số Lượng</th>
-              <th>Thành Tiền</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr key="">
-              <td>
-                <button><IconTrash /></button>
-              </td>
-              <td>
-                <img
-                  src="https://www.shutterstock.com/image-photo/banh-mi-vietnamese-word-bread-600nw-1954013653.jpg"
-                  alt=""
-                />
-              </td>
-              <td class="cart-product-name">Bánh mỳ</td>
-              <td>50000 đ</td>
-              <td class="cart-items-quantity">
-                <button>-</button>
-                <input type="text" value="1" />
-                <button>+</button>
-              </td>
-              <td class="cart-product-price">100000 đ</td>
-            </tr>
-            <tr key="">
-              <td>
-                <button><IconTrash /></button>
-              </td>
-              <td>
-                <img
-                  src="https://www.shutterstock.com/image-photo/banh-mi-vietnamese-word-bread-600nw-1954013653.jpg"
-                  alt=""
-                />
-              </td>
-              <td class="cart-product-name">Bánh mỳ</td>
-              <td>50000 đ</td>
-              <td class="cart-items-quantity">
-                <button>-</button>
-                <input type="text" value="1" />
-                <button>+</button>
-              </td>
-              <td class="cart-product-price">100000 đ</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="cart-pay">
-        <hr />
-        <div>
-          <p>Tổng tiền: <span>100000 đ</span></p>
-          <div><button>Thanh toán</button></div>
-        </div>
+      <div>
+        <n-data-table
+          class="table-cart"
+          :bordered="false"
+          :single-line="false"
+          :columns="columns"
+          :data="data"
+        />
       </div>
     </div>
   </div>
@@ -76,6 +149,7 @@
   > div {
     width: 1200px;
     overflow: hidden;
+    margin-top: 100px;
 
     h1 {
       color: #1e1d23;
@@ -91,228 +165,21 @@
     }
   }
 }
-
-.cart-table {
-  width: 1200px;
-  height: 400px;
-  overflow: scroll;
-  padding-bottom: 40px;
-
-  table {
-    width: 100%;
-    text-align: center;
-    border: 1px solid #f1f1f1;
-
-    th,
-    td {
-      padding: 10px 0;
-      white-space: nowrap;
-      font-size: 16px;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
-        'Open Sans', 'Helvetica Neue', sans-serif;
-      border-bottom: 1px solid #f2f2f2;
-    }
-
-    img {
-      width: 60px;
-      height: 50px;
-      object-fit: cover;
-    }
-
-    th {
-      border-bottom: 2px solid #f06c25;
-      font-weight: 500;
-    }
-
-    input {
-      width: 40px;
-      padding: 8px;
-      text-align: center;
-      font-size: 16px;
-      border: none;
-    }
-
-    .cart-product-name {
-      color: #00b14f;
-      font-size: 16px;
-    }
-
-    button {
-      background-color: white;
-      color: black;
-
-      &:hover {
-        background-color: orangered;
-        transition: all 0.2s;
-        color: white;
-        border-radius: 50%;
-        i {
-          color: white;
-        }
-      }
-
-      i {
-        transition: all ease 0.25s;
-        font-size: 14px;
-        color: black;
-      }
-    }
-
-    .cart-product-price {
-      color: red;
-    }
-  }
-
-  hr {
-    margin-top: 60px;
-  }
+.table-cart {
+  margin-bottom: 200px;
 }
-
-.cart-table::-webkit-scrollbar {
-  width: 4px;
-  height: 6px;
-}
-
-.cart-table::-webkit-scrollbar-track {
-  border: none;
-}
-
-.cart-table::-webkit-scrollbar-thumb {
-  background-color: #00b14f;
-}
-
-.cart-pay {
-  position: fixed;
-  background-color: #fff;
-  bottom: 0;
-  // padding: 30px 0;
-  right: 0;
-  left: 0;
-  height: 160px;
-
-  hr {
-    width: 100%;
-    border: 1px solid #f2f2f2;
-  }
-
-  p {
-    // width: 1080px;
-    text-align: right;
-    display: block;
-    margin: 24px auto;
-    font-size: 21px;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
-      'Open Sans', 'Helvetica Neue', sans-serif;
-  }
-
-  span {
-    margin-left: 40px;
-    color: red;
-    font-size: 24px;
-    font-weight: 600;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
-      'Open Sans', 'Helvetica Neue', sans-serif;
-  }
-
-  > div {
-    width: 1150px;
-    margin: 0 auto;
-
-    > div {
-      display: flex;
-      justify-content: end;
-      width: 100%;
-    }
-  }
-}
-
-@include mobile {
-  h1 {
-    text-align: center !important;
-  }
-
-  .cart-table {
-    width: 80%;
-    margin: 0 auto;
-  }
-
-  .cart-pay {
-    height: 150px;
-
-    div {
-      width: 80%;
-      margin: 0 auto;
-
-      > div {
-        justify-content: center;
-      }
-    }
-  }
-}
-@include small-tablet {
-  h1 {
-    text-align: center !important;
-  }
-
-  .cart-table {
-    width: 80%;
-    margin: 0 auto;
-  }
-
-  .cart-pay {
-    height: 150px;
-
-    div {
-      width: 80%;
-      margin: 0 auto;
-
-      > div {
-        justify-content: center;
-      }
-    }
-  }
-}
-@include tablet {
-  h1 {
-    text-align: center !important;
-  }
-
-  .cart-table {
-    width: 80%;
-    margin: 0 auto;
-  }
-
-  .cart-pay {
-    height: 200px;
-
-    hr {
-      width: 100%;
-    }
-
-    div {
-      width: 80%;
-      margin: 0 auto;
-
-      > div {
-        justify-content: end;
-      }
-    }
-  }
-}
-
-/* .cart-items-quantity {
-  display: flex;
-  justify-content: center;
-} */
 button {
   padding: 12px 16px;
-  background-color: #f06c25;
   border: none;
   border-radius: 5px;
-  color: white;
   font-family: 'Roboto', sans-serif;
   font-size: 16px;
   cursor: pointer;
+  &:hover {
+    background: #f06c25;
+    transition: all ease 0.3s;
+    color: white;
+  }
 }
 </style>
 <route lang="yaml">

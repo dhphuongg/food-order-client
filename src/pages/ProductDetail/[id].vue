@@ -166,7 +166,6 @@ watch(
           :space-between="20"
           :loop="true"
           :slides-per-view="4"
-          transition-style="{duration: '1000ms'}"
           draggable
         >
           <hf-card-product-vertical
