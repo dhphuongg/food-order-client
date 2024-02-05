@@ -1,33 +1,35 @@
 <script setup>
 import { getInfo } from '@/api/product.api';
 import { useRoute, useRouter } from 'vue-router';
+import { useLoadingBar } from 'naive-ui';
+const loadingBar = useLoadingBar();
 import { getAllProduct } from '@/api/product.api';
-const loading = ref(false);
 const listProduct = ref([]);
 const route = useRoute();
-const router = useRouter();
 const productInfo = ref({});
 const handleGetProductInfo = async () => {
+  loadingBar.start();
   try {
     const id = route?.params?.id;
     let res = await getInfo(id);
     if (res) {
       productInfo.value = res.data;
+      loadingBar.finish();
     }
   } catch (err) {
     console.log(err);
+    loadingBar.finish();
   }
 };
-onBeforeMount(() => {
-  handleGetProductInfo();
-  getProducts();
+onBeforeMount(async () => {
+  await handleGetProductInfo();
+  await getProducts();
   window.scrollTo({
     top: 0,
     behavior: 'smooth'
   });
 });
 const getProducts = async () => {
-  loading.value = true;
   try {
     let res = await getAllProduct();
     if (res && res.data) {
@@ -38,9 +40,7 @@ const getProducts = async () => {
     console.log(err);
   }
 };
-const handleClickShowProduct = (id) => {
-  router.push(`/productdetail/${id}`);
-};
+
 watch(
   () => route.params.id,
   async (newId, oldId) => {
@@ -160,20 +160,15 @@ watch(
       <div class="detail-similar">
         <n-carousel
           class="carousel-category"
-          autoplay="true"
+          autoplay
           show-arrow="true"
-          interval="3000"
+          :interval="3000"
           :space-between="20"
           :loop="true"
           :slides-per-view="4"
           draggable
         >
-          <hf-card-product-vertical
-            @click="handleClickShowProduct(item.id)"
-            v-for="item in listProduct"
-            :key="item.id"
-            :product="item"
-          />
+          <hf-card-product-vertical v-for="item in listProduct" :key="item.id" :product="item" />
         </n-carousel>
       </div>
     </div>
@@ -582,6 +577,7 @@ iframe {
 </style>
 
 <route lang="yaml">
+    path: '/productdetail/:id?'
     name: ProductDetail
     meta:
 </route>

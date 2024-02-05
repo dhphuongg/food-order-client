@@ -1,25 +1,18 @@
 <script setup>
 import { getAllProduct } from '@/api/product.api';
-import router from "@/router"
-const loading = ref(false);
 const listProduct = ref([]);
-onBeforeMount(() => {
-  getProducts();
+onBeforeMount(async () => {
+  await getProducts();
 });
 const getProducts = async () => {
-  loading.value = true;
   try {
     let res = await getAllProduct();
     if (res && res.data) {
       listProduct.value = res.data.items;
-      loading.value = false;
     }
   } catch (err) {
     console.log(err);
   }
-};
-const handleClickShowProduct = (id) => {
-  router.push(`/productdetail/${id}`);
 };
 </script>
 <template>
@@ -28,16 +21,15 @@ const handleClickShowProduct = (id) => {
       <h1 class="home-title">Gợi ý món ăn</h1>
       <n-carousel
         class="carousel-category"
-        autoplay="true"
+        autoplay
         show-arrow="true"
-        interval="3000"
+        :interval="3000"
         :space-between="20"
         :loop="true"
         :slides-per-view="4"
         draggable
       >
         <hf-card-product-vertical
-          @click="handleClickShowProduct(item.id)"
           v-for="item in listProduct"
           :key="item.id"
           :product="item"

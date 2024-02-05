@@ -1,27 +1,23 @@
 <script setup>
 import { getAllProduct } from '@/api/product.api';
-import { useRouter } from 'vue-router';
-const loading = ref(false);
 const listProduct = ref([]);
-onBeforeMount(() => {
-  getProducts();
+onBeforeMount(async () => {
+  await getProducts();
 });
 const getProducts = async () => {
-  loading.value = true;
   try {
     let res = await getAllProduct();
     if (res && res.data) {
       listProduct.value = res.data.items.slice(0, 6).reverse();
-      loading.value = false;
     }
   } catch (err) {
     console.log(err);
   }
 };
-const router = useRouter();
-const handleClickShowProduct = (id) => {
-  router.push(`/productdetail/${id}`);
-};
+// const router = useRouter();
+// const handleClickShowProduct = (id) => {
+//   router.push(`/productdetail/${id}`);
+// };
 </script>
 <template>
   <div class="container popular-food">
@@ -32,7 +28,6 @@ const handleClickShowProduct = (id) => {
       <!-- List popular food -->
       <div class="list-foods">
         <hf-card-product-horizontal
-          @click="handleClickShowProduct(item.id)"
           v-for="item in listProduct"
           :key="item.id"
           :product="item"

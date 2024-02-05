@@ -22,7 +22,12 @@ defineProps({
       </div>
       <div class="horizontal-card-content">
         <div>
-          <span>{{ product.name }}</span>
+          <router-link
+            v-if="product && product.id"
+            :to="{ name: 'ProductDetail', params: { id: product.id } }"
+          >
+            <span>{{ product.name }}</span>
+          </router-link>
           <div class="card-icon">
             <IconStarFilled color="#ffc222" size="15" />
             <IconStarFilled color="#ffc222" size="15" />

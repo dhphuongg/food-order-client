@@ -1,7 +1,6 @@
 <script setup>
 import { getCategory } from '@/api/category.api';
 const numberSlides = ref(6);
-const loading = ref(false);
 const listCategory = ref([]);
 
 const updateNumberSlides = () => {
@@ -18,8 +17,8 @@ const updateNumberSlides = () => {
     numberSlides.value = 6;
   }
 };
-onBeforeMount(() => {
-  getCategories();
+onBeforeMount(async () => {
+  await getCategories();
 });
 // Lắng nghe sự kiện resize của window
 onMounted(() => {
@@ -31,12 +30,10 @@ onUnmounted(() => {
 });
 
 const getCategories = async () => {
-  loading.value = true;
   try {
     let res = await getCategory();
     if (res && res.data) {
       listCategory.value = res.data;
-      loading.value = false;
     }
   } catch (err) {
     console.log(err);
@@ -49,9 +46,9 @@ const getCategories = async () => {
       <h1 class="category-title home-title">Danh mục sản phẩm</h1>
       <n-carousel
         class="carousel-category"
-        autoplay="true"
+        autoplay
         show-arrow="true"
-        interval="3000"
+        :interval="3000"
         :space-between="20"
         :loop="true"
         :slides-per-view="numberSlides"

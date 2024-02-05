@@ -13,35 +13,36 @@ defineProps({
     }
   }
 });
-
 </script>
 <template>
-  <div class="card">
-    <div class="box">Đang hoạt động</div>
-    <div class="imgProduct">
-      <div>
-        <img :src="product.image" alt="" />
-      </div>
-    </div>
-    <div class="card-content">
-      <div>
-        <div class="card-content-nameproduct">
-          <span>{{ product.name }}</span>
-        </div>
-        <p class="product-description">{{ product.description }}</p>
-        <div class="productItem">
-          <div style="display: flex, alignItems: center">
-            <h3>{{ product.price }} VND</h3>
-          </div>
-          <div>
-            <button class="orderBtn">
-              <IconShoppingCartFilled color="#fff" />
-            </button>
-          </div>
+  <router-link  v-if="product && product.id" :to="{ name: 'ProductDetail', params: { id: product.id } }">
+    <div class="card">
+      <div class="box">Đang hoạt động</div>
+      <div class="imgProduct">
+        <div>
+          <img :src="product.image" alt="" />
         </div>
       </div>
+      <div class="card-content">
+        <div>
+          <div class="card-content-nameproduct">
+            <span>{{ product.name }}</span>
+          </div>
+          <p class="product-description">{{ product.description }}</p>
+          <div class="productItem">
+            <div style="display: flex, alignItems: center">
+              <h3>{{ product.price }} VND</h3>
+            </div>
+            <div>
+              <button class="orderBtn">
+                <IconShoppingCartFilled color="#fff" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
+  </router-link>
 </template>
 <style scoped lang="scss">
 .card {
