@@ -33,7 +33,7 @@ const loginHandler = () => {
       try {
         const { data } = await login(account);
         authStore.save(data.data);
-        message.success('Đăng nhập thành công. Xin chào <b>' + account.username + '</b>');
+        message.success('Đăng nhập thành công. Xin chào ' + account.username);
         if (data.data.authorities[0].authority === 'ROLE_USER') router.push('/');
         else router.push('/admin');
       } catch (err) {
