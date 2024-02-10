@@ -193,14 +193,7 @@ watch(
         >
           <hf-card-product-vertical v-for="item in listProduct" :key="item.id" :product="item" />
           <template #dots="{ total, currentIndex, to }">
-            <ul class="custom-dots">
-              <li
-                v-for="index of total"
-                :key="index"
-                :class="{ ['is-active']: currentIndex === index - 1 }"
-                @click="to(index - 1)"
-              />
-            </ul>
+            <hf-custom-dots :total="total" :currentIndex="currentIndex" :to="to"></hf-custom-dots>
           </template>
         </n-carousel>
       </div>
@@ -612,28 +605,17 @@ iframe {
   padding-bottom: 50px;
 }
 .custom-dots {
-  display: flex;
-  margin: 0 auto;
-  padding: 0;
-  position: absolute;
   bottom: 0px;
-  left: 0;
-}
-
-.custom-dots li {
-  display: inline-block;
-  width: 12px;
-  height: 4px;
-  margin: 0 3px;
-  border-radius: 4px;
-  background-color: rgba(4, 129, 23, 0.366);
-  transition: width 0.3s, background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  cursor: pointer;
-}
-
-.custom-dots li.is-active {
-  width: 40px;
-  background: green;
+  left: 40%;
+  @include tablet {
+    left: 35%;
+  }
+  @include small-tablet {
+    left: 28%;
+  }
+  @include mobile {
+    left: 10%;
+  }
 }
 </style>
 

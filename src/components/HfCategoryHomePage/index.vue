@@ -57,14 +57,7 @@ const getCategories = async () => {
       >
         <hf-card-category v-for="item in listCategory" :key="item.id" :category="item" />
         <template #dots="{ total, currentIndex, to }">
-          <ul class="custom-dots">
-            <li
-              v-for="index of total"
-              :key="index"
-              :class="{ ['is-active']: currentIndex === index - 1 }"
-              @click="to(index - 1)"
-            />
-          </ul>
+          <hf-custom-dots :total="total" :currentIndex="currentIndex" :to="to"></hf-custom-dots>
         </template>
       </n-carousel>
     </div>
@@ -74,32 +67,5 @@ const getCategories = async () => {
 <style lang="scss" scoped>
 .category {
   margin-bottom: 60px;
-}
-.custom-dots {
-  display: flex;
-  margin: 0 auto;
-  padding: 0;
-  position: absolute;
-  bottom: 70px;
-  left: 0;
-  @media screen and (max-width: 379px) {
-    bottom: 100px;
-  }
-}
-
-.custom-dots li {
-  display: inline-block;
-  width: 12px;
-  height: 4px;
-  margin: 0 3px;
-  border-radius: 4px;
-  background-color: #de731c7a;
-  transition: width 0.3s, background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  cursor: pointer;
-}
-
-.custom-dots li.is-active {
-  width: 40px;
-  background: #f06c25;
 }
 </style>
