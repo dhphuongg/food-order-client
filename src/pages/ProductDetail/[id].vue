@@ -193,7 +193,7 @@ watch(
         >
           <hf-card-product-vertical v-for="item in listProduct" :key="item.id" :product="item" />
           <template #dots="{ total, currentIndex, to }">
-            <hf-custom-dots :total="total" :currentIndex="currentIndex" :to="to"></hf-custom-dots>
+            <hf-custom-dots :total="total" :currentIndex="currentIndex" @to="to"></hf-custom-dots>
           </template>
         </n-carousel>
       </div>

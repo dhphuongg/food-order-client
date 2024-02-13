@@ -1,9 +1,9 @@
 <script setup>
 defineProps({
   total: Number,
-  currentIndex: Number,
-  to: Function
+  currentIndex: Number
 });
+defineEmits(['to']);
 </script>
 <template>
   <ul class="custom-dots">
@@ -12,7 +12,7 @@ defineProps({
       v-for="index of total"
       :key="index"
       :class="{ ['is-active']: currentIndex === index - 1 }"
-      @click="to(index - 1)"
+      @click="$emit('to', index - 1)"
     />
   </ul>
 </template>

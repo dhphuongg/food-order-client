@@ -57,7 +57,7 @@ const getCategories = async () => {
       >
         <hf-card-category v-for="item in listCategory" :key="item.id" :category="item" />
         <template #dots="{ total, currentIndex, to }">
-          <hf-custom-dots :total="total" :currentIndex="currentIndex" :to="to"></hf-custom-dots>
+          <hf-custom-dots :total="total" :currentIndex="currentIndex" @to="to"></hf-custom-dots>
         </template>
       </n-carousel>
     </div>
