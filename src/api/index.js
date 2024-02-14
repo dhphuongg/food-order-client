@@ -3,7 +3,7 @@ import { LocalStorage } from '@/constant/localStorage.constant';
 import router from '@/router';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: import.meta.env.VITE_API_URL + "/api/v1/",
   headers: {
     'Content-Type': 'application/json'
   }
@@ -14,7 +14,7 @@ api.interceptors.request.use((config) => {
   return config;
 }, Promise.reject);
 api.interceptors.response.use(
-  (value) => value,
+  (value) => value.data,
   (error) => {
     if (error.response.status === 401) {
       localStorage.removeItem(LocalStorage.auth);
