@@ -132,8 +132,6 @@ const handleLogin = () => {
         }
     }
 
-    .icon-menu-mobile {
-        margin-right: 6px;
-    }
+
 }
 </style>
