@@ -15,7 +15,7 @@ api.interceptors.request.use((config) => {
   return config;
 }, Promise.reject);
 api.interceptors.response.use(
-  (value) => value,
+  (value) => value.data,
   (error) => {
     if (error.response.status === 401) {
       localStorage.removeItem(LocalStorage.auth);
