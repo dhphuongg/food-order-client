@@ -3,9 +3,10 @@ import { LocalStorage } from '@/constant/localStorage.constant';
 import router from '@/router';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL + "/api/v1/",
+  baseURL: `${import.meta.env.VITE_API_URL}/api/v1`,
   headers: {
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'Accept-Language': 'vn'
   }
 });
 api.interceptors.request.use((config) => {
@@ -24,9 +25,10 @@ api.interceptors.response.use(
 );
 
 const apiDefault = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: `${import.meta.env.VITE_API_URL}/api/v1`,
   headers: {
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'Accept-Language': 'vn'
   }
 });
 
