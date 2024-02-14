@@ -66,14 +66,12 @@ const getProducts = async () => {
 
 watch(
   () => route.params.id,
-  async (newId, oldId) => {
-    if (newId !== oldId) {
-      await handleGetProductInfo();
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-    }
+  async () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+    await handleGetProductInfo();
   }
 );
 </script>
