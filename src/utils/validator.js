@@ -63,4 +63,51 @@ function validatePassword(_, password) {
   return true;
 }
 
-export { validateUsername, validateEmail, validatePassword };
+function validateFullName(_, fullname) {
+  if (fullname === null || typeof fullname === 'undefined') {
+    return new Error('Vui lòng nhập họ tên!');
+  }
+
+  if (fullname.trim() === '') {
+    return new Error('Vui lòng nhập họ tên!');
+  }
+}
+
+function validateDOB(_, dob) {
+  if (dob === null || typeof dob === 'undefined') {
+    return new Error('Vui lòng nhập ngày tháng năm sinh!');
+  }
+  if (dob.trim() === '') {
+    return new Error('Vui lòng nhập ngày tháng năm sinh!');
+  } else {
+    const regex = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/;
+    if (!regex.test(dob)) {
+      return new Error('Nhập đúng định dạng yyyy-mm-dd');
+    } else {
+      const [year, month, day] = dob.split('-').map(Number);
+      if (year < 1) {
+        return new Error('Năm phải lớn hơn 0!');
+      }
+      if (month < 1 || month > 12) {
+        return new Error('Tháng phải nằm trong khoảng từ 1 đến 12');
+      }
+      const lastDayOfMonth = new Date(year, month, 0).getDate();
+      if (day < 1 || day > lastDayOfMonth) {
+        return new Error(`Không có ngày ${day} trong tháng ${month}`);
+      }
+    }
+  }
+}
+function validataPhoneNumber(_, phoneNumber) {
+  if (phoneNumber === null || typeof phoneNumber === 'undefined') {
+    return new Error('Vui lòng nhập số điện thoại của bạn!');
+  }
+  if (phoneNumber.trim() === '') {
+    return new Error("Vui lòng nhập số điện thoại của bạn!");
+  }
+  const regex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
+  if (!regex.test(phoneNumber)) {
+    return new Error("Số điện thoại không được chứa kí tự chữ cái và ký tự đắc biệt!");
+  }
+}
+export { validateUsername, validateEmail, validatePassword, validateFullName, validateDOB, validataPhoneNumber };

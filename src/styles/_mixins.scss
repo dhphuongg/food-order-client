@@ -40,3 +40,13 @@
     weight: $f-weight;
   }
 }
+
+@mixin truncate-text($max-lines: 1, $max-width: 100%, $line-height: 1.2em) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: $max-lines;
+  -webkit-box-orient: vertical;
+  max-width: $max-width;
+  line-height: $line-height;
+}

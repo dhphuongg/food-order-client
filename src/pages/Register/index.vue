@@ -57,7 +57,7 @@ const registerHandler = () => {
           longitude: coords.value.longitude
         });
         const { data } = await login(formValue);
-        authStore.save(data.data);
+        authStore.save({ ...data.data, customerId: userRes.data.customerId, customerName: account.username });
         message.success('Đăng ký tài khoản thành công. Xin chào ' + formValue.username);
         router.push('/');
       } catch (err) {
