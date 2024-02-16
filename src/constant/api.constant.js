@@ -6,5 +6,11 @@ export const ApiConstant = {
   },
   product: "product",
   category: "category",
-  user: "user"
+  customer: "customer",
+  user: {
+    current: "user/current",
+    customer: "customer",
+    address: "address",
+    changePassword: "auth/change-password"
+  }
 };

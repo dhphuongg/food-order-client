@@ -12,7 +12,7 @@ export const useAuthStore = defineStore('auth', () => {
     auth.value = {};
     localStorage.removeItem(LocalStorage.auth);
   };
-  return { auth, save, clear };
+  return { auth, save, clear, loggedId };
 });
 
 if (import.meta.hot) {

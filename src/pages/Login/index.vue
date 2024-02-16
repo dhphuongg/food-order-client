@@ -2,11 +2,11 @@
 import { login } from '@/api/auth.api';
 import { useAuthStore } from '@/stores/auth';
 import { validateUsername, validatePassword } from '@/utils/validator';
+import { getCurrentUser } from '@/api/user.api';
 
 const message = useMessage();
 const authStore = useAuthStore();
 const router = useRouter();
-
 const loading = ref(false);
 const account = reactive({
   username: null,
@@ -33,7 +33,9 @@ const loginHandler = () => {
       try {
         const { data } = await login(account);
         authStore.save(data.data);
-        message.success('Đăng nhập thành công. Xin chào <b>' + account.username + '</b>');
+        const userRes = await getCurrentUser();
+        authStore.save({ ...data.data, customerId: userRes.data.customerId, customerName: account.username });
+        message.success('Đăng nhập thành công. Xin chào ' + account.username);
         if (data.data.authorities[0].authority === 'ROLE_USER') router.push('/');
         else router.push('/admin');
       } catch (err) {
@@ -54,43 +56,21 @@ const loginHandler = () => {
     <n-form class="login-form" :model="account" :rules="rules" ref="formRef">
       <h2>Đăng nhập</h2>
       <n-form-item class="form-item" path="username" label="Tên người dùng">
-        <n-input
-          :theme-overrides="{
-            border: '0'
-          }"
-          class="form-input"
-          v-model:value="account.username"
-          size="large"
-          placeholder=""
-          type="text"
-        />
+        <n-input :theme-overrides="{
+          border: '0'
+        }" class="form-input" v-model:value="account.username" size="large" placeholder="" type="text" />
       </n-form-item>
       <n-form-item class="form-item" path="password" label="Mật khẩu">
-        <n-input
-          :theme-overrides="{
-            border: '0'
-          }"
-          class="form-input"
-          v-model:value="account.password"
-          size="large"
-          placeholder=""
-          type="password"
-          show-password-on="click"
-        />
+        <n-input :theme-overrides="{
+          border: '0'
+        }" class="form-input" v-model:value="account.password" size="large" placeholder="" type="password"
+          show-password-on="click" />
       </n-form-item>
       <div class="forgot-password">
         <router-link to="/forgot-password">Quên mật khẩu?</router-link>
       </div>
-      <n-button
-        attr-type="submit"
-        block
-        :bordered="false"
-        text-color="white"
-        icon-placement="left"
-        size="large"
-        :loading="loading"
-        @click="loginHandler"
-      >
+      <n-button attr-type="submit" block :bordered="false" text-color="white" icon-placement="left" size="large"
+        :loading="loading" @click="loginHandler">
         Đăng nhập
       </n-button>
     </n-form>
@@ -116,15 +96,19 @@ const loginHandler = () => {
       text-transform: uppercase;
       white-space: nowrap;
     }
+
     .form-item {
       position: relative;
       margin-top: 30px;
+
       .form-input {
         border-bottom: 1px solid black;
       }
     }
+
     .forgot-password {
       text-align: right;
+
       a {
         &:hover {
           color: #fd8f52;
@@ -132,6 +116,7 @@ const loginHandler = () => {
       }
     }
   }
+
   button {
     background: linear-gradient(to bottom right, #fd8f52, #ffb056);
     padding: 25px 0;
@@ -140,12 +125,14 @@ const loginHandler = () => {
     width: 90%;
     margin: 0 auto;
     margin-top: 32px;
+
     &:hover {
       opacity: 0.8;
       border: 0;
       box-shadow: none;
     }
   }
+
   .register {
     margin-top: 35px;
     text-align: center;
@@ -154,8 +141,10 @@ const loginHandler = () => {
     font-weight: 500;
     color: #a9a9a9;
     padding-bottom: 18px;
+
     a {
       color: #fd8f52;
+
       &:hover {
         color: #04aa6d;
       }
