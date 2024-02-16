@@ -17,25 +17,25 @@ defineProps({
 <template>
   <router-link
     class="custom-center"
-    v-if="product && product.id"
-    :to="{ name: 'ProductDetail', params: { id: product.id } }"
+    v-if="product && product.productId"
+    :to="{ name: 'ProductDetail', params: { id: product.productId, shopId: product.shopId } }"
   >
     <div class="card">
       <div class="box">Đang hoạt động</div>
       <div class="imgProduct">
         <div>
-          <img :src="product.image" alt="" />
+          <img :src="product.productImageUrl" alt="" />
         </div>
       </div>
       <div class="card-content">
         <div>
           <div class="card-content-nameproduct">
-            <span>{{ product.name }}</span>
+            <span>{{ product.productName }}</span>
           </div>
-          <p class="product-description">{{ product.description }}</p>
+          <p class="product-description">{{ product.categoryName }}</p>
           <div class="productItem">
             <div style="display: flex, alignItems: center">
-              <h3>{{ product.price }} VND</h3>
+              <h3>{{ product.productPrice }} VND</h3>
             </div>
             <div>
               <button class="orderBtn">

@@ -5,5 +5,6 @@ export const ApiConstant = {
     register: 'auth/register'
   },
   product: "product",
-  category: "category"
+  category: "category",
+  user: "user"
 };

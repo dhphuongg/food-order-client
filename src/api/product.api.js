@@ -5,6 +5,6 @@ const productApi = () => ({
   getInfo: async (id) =>
     api.get(`${ApiConstant.product}/${id}`),
   getAllProduct: async () =>
-    api.get(`${ApiConstant.product}`),
+    api.get(`${ApiConstant.user}/find-product-info`),
 });
 export const { getAllProduct, getInfo } = productApi();

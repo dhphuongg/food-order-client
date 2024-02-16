@@ -618,7 +618,7 @@ iframe {
 </style>
 
 <route lang="yaml">
-    path: '/productdetail/:id?'
+    path: '/productdetail/:id/:shopId'
     name: ProductDetail
     meta:
 </route>
