@@ -2,11 +2,13 @@
 import { login } from '@/api/auth.api';
 import { useAuthStore } from '@/stores/auth';
 import { validateUsername, validatePassword } from '@/utils/validator';
-import { getCurrentUser } from '@/api/user.api';
+import { useRoute } from 'vue-router';
 
 const message = useMessage();
 const authStore = useAuthStore();
 const router = useRouter();
+const route = useRoute();
+
 const loading = ref(false);
 const account = reactive({
   username: null,
@@ -36,8 +38,11 @@ const loginHandler = () => {
         const userRes = await getCurrentUser();
         authStore.save({ ...data.data, customerId: userRes.data.customerId, customerName: account.username });
         message.success('Đăng nhập thành công. Xin chào ' + account.username);
-        if (data.data.authorities[0].authority === 'ROLE_USER') router.push('/');
-        else router.push('/admin');
+        if (data.data.authorities[0].authority === 'ROLE_USER') {
+          router.push(route.query.redirect || '/');
+        } else {
+          router.push(route.query.redirect || '/admin');
+        }
       } catch (err) {
         if (!!err.response) {
           message.error(err.response.data.message);
