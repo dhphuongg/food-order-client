@@ -1,4 +1,17 @@
-<script setup></script>
+<script setup>
+import { useCartStore } from '@/stores/cart';
+import { useAuthStore } from '@/stores/auth';
+const user = useAuthStore();
+const cartStore = useCartStore();
+
+const customerId = ref(-1);
+onBeforeMount(async () => {
+    if (!(typeof user.auth.customerId === 'undefined') || !(typeof user.auth.customerName === 'undefined')) {
+        customerId.value = user.auth.customerId;
+        cartStore.getAllProducts(customerId.value);
+    }
+})
+</script>
 <template>
   <div class="main">
     <HfSearchBannerHomePage />

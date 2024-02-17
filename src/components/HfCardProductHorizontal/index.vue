@@ -25,7 +25,10 @@ defineProps({
           <router-link
             class="custom-center"
             v-if="product && product.productId"
-            :to="{ name: 'ProductDetail', params: { id: product.productId, shopId: product.shopId } }"
+            :to="{
+              name: 'ProductDetail',
+              params: { id: product.productId, shopId: product.shopId }
+            }"
           >
             <span>{{ product.productName }}</span>
           </router-link>

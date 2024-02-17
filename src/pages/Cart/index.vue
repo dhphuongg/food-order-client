@@ -1,52 +1,46 @@
 <script setup>
 import { IconTrash } from '@tabler/icons-vue';
-const data = reactive([
-  {
-    key: 0,
-    image:
-      'https://www.shutterstock.com/image-photo/banh-mi-vietnamese-word-bread-600nw-1954013653.jpg',
-    name: 'John Brown',
-    price: 32,
-    quantity: 1
-  },
-  {
-    key: 1,
-    image:
-      'https://www.shutterstock.com/image-photo/banh-mi-vietnamese-word-bread-600nw-1954013653.jpg',
-    name: 'Jim Green',
-    price: 42,
-    quantity: 1
-  },
-  {
-    key: 2,
-    image:
-      'https://www.shutterstock.com/image-photo/banh-mi-vietnamese-word-bread-600nw-1954013653.jpg',
-    name: 'Joe Black',
-    price: 32,
-    quantity: 2
+import { useCartStore } from '@/stores/cart.js';
+import { useAuthStore } from '@/stores/auth.js';
+
+const cartStore = useCartStore();
+const user = useAuthStore();
+const message = useMessage();
+const customerId = ref(-1);
+onBeforeMount(async () => {
+  if (
+    !(typeof user.auth.customerId === 'undefined') ||
+    !(typeof user.auth.customerName === 'undefined')
+  ) {
+    customerId.value = user.auth.customerId;
+    cartStore.getAllProducts(customerId.value);
   }
-]);
-const columns = reactive([
+});
+const columns = ref([
   {
     title: 'Xóa',
     key: 'actions',
     align: 'center',
     render(row) {
       return h(IconTrash, {
-        onClick: () => console.log(row)
+        onClick: () => {
+          cartStore.deleteItem(row);
+          message.success('Xóa sản phẩm thành công');
+        }
       });
     }
   },
   {
     title: 'Ảnh',
-    key: 'image',
+    key: 'productImage',
     align: 'center',
     render(row) {
       return h('img', {
-        src: row.image,
+        src: row.productImageUrl,
         style: {
           width: '70px',
-          height: '50px'
+          height: '50px',
+          cursor: 'pointer'
         },
         onClick: () => console.log(row)
       });
@@ -54,51 +48,68 @@ const columns = reactive([
   },
   {
     title: 'Tên sản phẩm',
-    key: 'name',
+    key: 'productName',
     align: 'center',
     render(row) {
       return h(
         'span',
         {
           style: {
-            color: 'green'
+            color: 'green',
+            cursor: 'pointer'
           }
         },
-        row.name
+        row.productName
       );
     }
   },
   {
     title: 'Giá',
-    key: 'price',
-    align: 'center'
+    key: 'productId',
+    align: 'center',
+    render(row) {
+      return h(
+        'span',
+        {
+          style: {
+            color: 'red',
+            cursor: 'pointer'
+          }
+        },
+        row.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
+      );
+    }
   },
   {
     title: 'Số lượng',
     key: 'quantity',
     align: 'center',
-    render(row) {
+    render(row, index) {
       return h('div', [
         h(
           'button',
           {
-            onClick: () => console.log('Decrease')
+            onClick: () => cartStore.removeItem(row)
           },
           '-'
         ),
-        h('input', {
-          style: {
-            border: 'none',
-            width: '40px',
-            textAlign: 'center'
+        h(
+          'span',
+          {
+            style: {
+              margin: '0 20px',
+              border: 'none',
+              width: '40px',
+              textAlign: 'center',
+              backgroundColor: 'transparent'
+            }
           },
-          type: 'text',
-          value: row.quantity
-        }),
+          row.quantity
+        ),
         h(
           'button',
           {
-            onClick: () => console.log('Increase')
+            onClick: () => cartStore.addItem(row)
           },
           '+'
         )
@@ -117,12 +128,13 @@ const columns = reactive([
             color: 'red'
           }
         },
-        row.price * row.quantity + ' đ'
+        (row.price * row.quantity).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
       );
     }
   }
 ]);
 </script>
+
 <template>
   <div class="cart-container cart">
     <div>
@@ -133,7 +145,7 @@ const columns = reactive([
           :bordered="false"
           :single-line="false"
           :columns="columns"
-          :data="data"
+          :data="cartStore.items"
         />
       </div>
     </div>
@@ -184,7 +196,7 @@ button {
 </style>
 <route lang="yaml">
     name: Cart
-    meta:
-      layout: default
+    meta: {requiresAuth: true}
+    layout: default
 </route>
     

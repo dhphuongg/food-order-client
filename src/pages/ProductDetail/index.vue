@@ -1,10 +1,11 @@
 <script setup>
 import { getInfo } from '@/api/product.api';
 import { useRoute, useRouter } from 'vue-router';
-import { useLoadingBar } from 'naive-ui';
+import { useLoadingBar, useMessage } from 'naive-ui';
 const loadingBar = useLoadingBar();
 import { getAllProduct } from '@/api/product.api';
 import { onBeforeMount } from 'vue';
+import { useCartStore } from '@/stores/cart';
 const numberSlides = ref(4);
 const updateNumberSlides = () => {
   const width = window.innerWidth;
@@ -34,7 +35,8 @@ const handleGetProductInfo = async () => {
   loadingBar.start();
   try {
     const id = route?.params?.id;
-    let res = await getInfo(id);
+    const shopId = route?.params?.shopId;
+    let res = await getInfo(id, shopId);
     if (res) {
       productInfo.value = res.data;
       loadingBar.finish();
@@ -57,7 +59,6 @@ const getProducts = async () => {
     let res = await getAllProduct();
     if (res && res.data) {
       listProduct.value = res.data.items;
-      loading.value = false;
     }
   } catch (err) {
     console.log(err);
@@ -74,25 +75,31 @@ watch(
     await handleGetProductInfo();
   }
 );
+const message = useMessage();
+const cartStore = useCartStore();
+const handleAddToCart = (product) => {
+  cartStore.addItem(product);
+  message.success('Thêm vào giỏ hàng thành công');
+};
 </script>
 <template>
   <div class="detail detail-container">
     <div>
       <div class="detail-product">
         <div class="detail-product-image">
-          <img :src="productInfo.image" alt="" />
+          <img :src="productInfo.productImageUrl" alt="" />
         </div>
         <div class="detail-product-infor">
-          <h3>{{ productInfo.name }}</h3>
+          <h3>{{ productInfo.productName }}</h3>
           <span class="product-rating"><IconStarFilled color="#ffc222" /></span>
           <span class="product-rating"><IconStarFilled color="#ffc222" /></span>
           <span class="product-rating"><IconStarFilled color="#ffc222" /></span>
           <span class="product-rating"><IconStarFilled color="#ffc222" /></span>
           <span class="product-rating"><IconStarFilled color="#ffc222" /></span>
           <br />
-          <span class="shop-address">{{ productInfo.description }}</span> <br />
+          <span class="shop-address">{{ productInfo.shopAddress }}</span> <br />
           <div class="detail-product-infor-price">
-            <span>{{ productInfo.price }} VND</span>
+            <span>{{ productInfo.productPrice }} VND</span>
           </div>
           <hr />
           <div class="detail-product-infor-number">
@@ -108,7 +115,9 @@ watch(
           <hr />
           <br />
           <div class="detail-product-add">
-            <button class="detail-product-add-to-cart">Thêm vào giỏ hàng</button>
+            <button class="detail-product-add-to-cart" @click="handleAddToCart(productInfo)">
+              Thêm vào giỏ hàng
+            </button>
             <button class="detail-product-add-to-buy">Đặt hàng</button>
           </div>
           <br />
@@ -122,7 +131,9 @@ watch(
           </div>
           <hr />
           <div class="detail-share">
-            <p>Danh mục: <span>Bún</span></p>
+            <p>
+              Danh mục: <span>{{ productInfo.categoryName }}</span>
+            </p>
             <p class="btn-group-icons">
               Chia sẻ
               <button class="btn-icon">

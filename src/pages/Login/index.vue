@@ -1,5 +1,6 @@
 <script setup>
 import { login } from '@/api/auth.api';
+import { getCurrentUser } from '@/api/user.api';
 import { useAuthStore } from '@/stores/auth';
 import { validateUsername, validatePassword } from '@/utils/validator';
 import { useRoute } from 'vue-router';

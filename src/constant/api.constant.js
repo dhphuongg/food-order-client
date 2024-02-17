@@ -12,5 +12,6 @@ export const ApiConstant = {
     customer: "customer",
     address: "address",
     changePassword: "auth/change-password"
-  }
+  },
+  cart: "cart"
 };
