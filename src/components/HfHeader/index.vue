@@ -1,6 +1,12 @@
 <script setup>
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
+
+const show = ref(false);
+const router = useRouter();
+const user = useAuthStore();
+const message = useMessage();
+const username = ref(user.auth.customerName);
 const options = ref([
     {
         label: "Thông tin cá nhân",
@@ -15,24 +21,6 @@ const options = ref([
         key: "logout"
     }
 ]);
-const show = ref(false);
-const router = useRouter();
-const user = useAuthStore();
-const handleLogin = () => {
-    router.push('/login');
-}
-const handleLogout = () => {
-    user.clear();
-    router.push('/');
-}
-const username = ref(user.auth.customerName);
-const handleSelect = (key) => {
-    if (key === "logout") {
-        handleLogout();
-    } else {
-        router.push(key);
-    }
-}
 const guestMenuOptions = ref([
     {
         id: 1,
@@ -65,6 +53,19 @@ const loggedInMenuOptions = ref([
         title: "Đơn mua"
     }
 ]);
+
+const goToPage = (key) => {
+    if (key === "logout") {
+        user.clear();
+        message.success('Đăng xuất thành công!');
+        router.push('/');
+    } else {
+        router.push(key);
+    }
+}
+const closedDragwer = () => {
+    show.value = false;
+}
 </script>
 <template>
     <header class="container header">
@@ -79,17 +80,16 @@ const loggedInMenuOptions = ref([
                 <router-link to="/login">
                     <IconShoppingCartFilled size="24" class="icon" />
                 </router-link>
-                <div class="user-login" v-if="user.loggedId">
-                    <n-dropdown :options="options" :show-arrow="true" @select="handleSelect">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <img src="@/assets/images/user-avatar.jpg" alt="avatar" class="user-avatar">
-                            <p>
-                                {{ username }}
-                            </p>
-                        </div>
-                    </n-dropdown>
-                </div>
-                <HfButton v-else @click="handleLogin">Đăng nhập</HfButton>
+                <n-dropdown v-if="user.loggedIn" :options="options" show-arrow @select="goToPage">
+                    <div style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;"
+                        @click="() => goToPage('/user-infor')">
+                        <img src="@/assets/images/user-avatar.jpg" alt="avatar" class="user-avatar">
+                        <p>
+                            {{ username }}
+                        </p>
+                    </div>
+                </n-dropdown>
+                <HfButton v-else @click="() => goToPage('/login')">Đăng nhập</HfButton>
             </div>
             <div class="nav-mobile">
                 <router-link to="/">
@@ -102,20 +102,20 @@ const loggedInMenuOptions = ref([
                     <template #header>
                         <img src="@/assets/images/logo.png" alt="logo" width="36%">
                     </template>
-                    <ul class="mobile-menu" v-if="user.loggedId">
-                        <li v-for="menu in loggedInMenuOptions" :key="menu.id">
-                            <router-link :to="menu.path">
+                    <ul class="mobile-menu" v-if="user.loggedIn">
+                        <li v-for=" menu  in  loggedInMenuOptions " :key="menu.id">
+                            <router-link :to="menu.path" @click="closedDragwer">
                                 {{ menu.title }}
                             </router-link>
                         </li>
-                        <li @click="handleLogout">
-                            <router-link to="">
+                        <li @click="() => goToPage('logout')">
+                            <router-link to="" @click="closedDragwer">
                                 Đăng xuất
                             </router-link>
                         </li>
                     </ul>
                     <ul class="mobile-menu" v-else>
-                        <li v-for="menu in guestMenuOptions" :key="menu.id">
+                        <li v-for=" menu  in  guestMenuOptions " :key="menu.id">
                             <router-link :to="menu.path">
                                 {{ menu.title }}
                             </router-link>
@@ -197,6 +197,7 @@ const loggedInMenuOptions = ref([
 
         a {
             padding-left: 4px;
+            display: block;
 
         }
 

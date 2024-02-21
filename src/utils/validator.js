@@ -75,27 +75,7 @@ function validateFullName(_, fullname) {
 
 function validateDOB(_, dob) {
   if (dob === null || typeof dob === 'undefined') {
-    return new Error('Vui lòng nhập ngày tháng năm sinh!');
-  }
-  if (dob.trim() === '') {
-    return new Error('Vui lòng nhập ngày tháng năm sinh!');
-  } else {
-    const regex = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/;
-    if (!regex.test(dob)) {
-      return new Error('Nhập đúng định dạng yyyy-mm-dd');
-    } else {
-      const [year, month, day] = dob.split('-').map(Number);
-      if (year < 1) {
-        return new Error('Năm phải lớn hơn 0!');
-      }
-      if (month < 1 || month > 12) {
-        return new Error('Tháng phải nằm trong khoảng từ 1 đến 12');
-      }
-      const lastDayOfMonth = new Date(year, month, 0).getDate();
-      if (day < 1 || day > lastDayOfMonth) {
-        return new Error(`Không có ngày ${day} trong tháng ${month}`);
-      }
-    }
+    return new Error('Vui lòng nhập ngày tháng năm sinh theo định dạng yyyy-mm-dd!');
   }
 }
 function validataPhoneNumber(_, phoneNumber) {

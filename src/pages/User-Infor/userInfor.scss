@@ -1,7 +1,6 @@
 .user-infor {
     margin-top: $header-height;
     background-color: #fcfcfc;
-    overflow: hidden;
 
     h1 {
         font-weight: 500;
@@ -35,7 +34,7 @@
             box-shadow: 0 0px 4px rgba(0 0 0/10%) !important;
             padding: 16px 20px 44px;
             border-radius: 0.625rem;
-            position: relative;
+            height: max-content;
 
             @include mobile {
                 width: 100%;
@@ -52,13 +51,6 @@
             margin-left: 20px;
             padding: 2px;
             flex-grow: 1;
-            height: 72vh;
-            overflow-y: auto;
-            background-color: transparent;
-
-            &::-webkit-scrollbar {
-                display: none;
-            }
 
             @include mobile {
                 margin-left: 0;
@@ -186,5 +178,9 @@
         &:hover {
             background-color: $black-color;
         }
+    }
+
+    .n-button__content {
+        color: #fff !important;
     }
 }
