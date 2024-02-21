@@ -14,7 +14,7 @@ const options = ref([
     },
     {
         label: "Đơn mua",
-        key: "/"
+        key: "/myorder"
     },
     {
         label: "Đăng xuất",
@@ -49,7 +49,7 @@ const loggedInMenuOptions = ref([
     },
     {
         id: 3,
-        path: "/",
+        path: "/myorder",
         title: "Đơn mua"
     }
 ]);
