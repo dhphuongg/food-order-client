@@ -11,7 +11,7 @@ const api = axios.create({
 });
 api.interceptors.request.use((config) => {
   const accessToken = JSON.parse(localStorage.getItem(LocalStorage.auth))?.accessToken;
-  config.headers.Authorization = 'Bear ' + accessToken;
+  config.headers.Authorization = 'Bearer ' + accessToken;
   return config;
 }, Promise.reject);
 api.interceptors.response.use(

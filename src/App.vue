@@ -2,7 +2,7 @@
 const themeOverrides = {
   common: {
     baseColor: '#F06C25',
-    primaryColor: '#F06C25'
+    primaryColor: '#F06C25',
   },
   Input: {
     borderRadius: '0',
@@ -14,6 +14,12 @@ const themeOverrides = {
     boxShadowFocus: 'none',
     boxShadowFocusError: 'none',
     caretColor: 'black'
+  },
+  Button: {
+    textColorWarning: '#fff',
+    textColorHoverWarning: '#fff',
+    textColorFocusWarning: '#fff',
+    textColorPressedWarning: '#fff',
   }
 };
 </script>
