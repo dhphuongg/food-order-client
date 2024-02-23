@@ -77,7 +77,7 @@ const closedDragwer = () => {
                 <router-link to="/">
                     <IconSearch size="24" class="icon" />
                 </router-link>
-                <router-link to="/login">
+                <router-link :to="username ? '/cart' : '/login'">
                     <IconShoppingCartFilled size="24" class="icon" />
                 </router-link>
                 <n-dropdown v-if="user.loggedIn" :options="options" show-arrow @select="goToPage">
