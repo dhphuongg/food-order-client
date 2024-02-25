@@ -1,23 +1,12 @@
 <script setup>
 import { IconTrash } from '@tabler/icons-vue';
 import { useCartStore } from '@/stores/cart.js';
-import { useAuthStore } from '@/stores/auth.js';
 import router from '@/router';
+import { NInputNumber, useMessage } from 'naive-ui';
 
 const cartStore = useCartStore();
-const user = useAuthStore();
 const message = useMessage();
-const customerId = ref(-1);
-onBeforeMount(async () => {
-  if (
-    !(typeof user.auth.customerId === 'undefined') ||
-    !(typeof user.auth.customerName === 'undefined')
-  ) {
-    customerId.value = user.auth.customerId;
-    await cartStore.getAllProducts(customerId.value);
-  }
-  console.log(customerId.value);
-});
+
 const columns = ref([
   {
     title: 'Xóa',
@@ -25,8 +14,8 @@ const columns = ref([
     align: 'center',
     render(row) {
       return h(IconTrash, {
-        onClick: () => {
-          cartStore.deleteItem(customerId.value, row);
+        onClick: async () => {
+          await cartStore.deleteItem(row);
           message.success('Xóa sản phẩm thành công');
         }
       });
@@ -38,7 +27,7 @@ const columns = ref([
     align: 'center',
     render(row) {
       return h('img', {
-        src: row.productImageUrl,
+        src: row.detail.productImageUrl,
         style: {
           width: '70px',
           height: '50px',
@@ -61,10 +50,10 @@ const columns = ref([
             cursor: 'pointer'
           },
           onClick: () => {
-            router.push(`/productdetail/${row.productId}/${row.shopId}`);
+            router.push(`/productdetail/${row.productId}/${row.detail.shopId}`);
           }
         },
-        row.productName
+        row.detail.productName
       );
     }
   },
@@ -81,7 +70,7 @@ const columns = ref([
             cursor: 'pointer'
           }
         },
-        row.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
+        new Intl.NumberFormat().format(row.detail.productPrice) + 'đ'
       );
     }
   },
@@ -89,38 +78,25 @@ const columns = ref([
     title: 'Số lượng',
     key: 'quantity',
     align: 'center',
-    render(row, index) {
+    render(row) {
       return h('div', [
-        h(
-          'button',
-          {
-            onClick: () => cartStore.removeItem(customerId.value, row)
+        h(NInputNumber, {
+          style: {
+            margin: '0 auto',
+            width: '150px',
+            textAlign: 'center'
           },
-          '-'
-        ),
-        h(
-          'span',
-          {
-            style: {
-              margin: '0 20px',
-              border: 'none',
-              width: '40px',
-              textAlign: 'center',
-              backgroundColor: 'transparent'
+          value: row.quantity,
+          min: 1,
+          max: row.detail.productStock,
+          onChange: async (value) => {
+            try {
+              await cartStore.updateItem(row, value);
+            } catch (e) {
+              message.error('Có lỗi khi cập nhật số lượng');
             }
-          },
-          row.quantity
-        ),
-        h(
-          'button',
-          {
-            onClick: () => {
-              console.log('id: ', customerId.value);
-              cartStore.addItem(customerId.value, row);
-            }
-          },
-          '+'
-        )
+          }
+        })
       ]);
     }
   },
@@ -136,7 +112,7 @@ const columns = ref([
             color: 'red'
           }
         },
-        (row.price * row.quantity).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
+        new Intl.NumberFormat().format(row.detail.productPrice * row.quantity) + 'đ'
       );
     }
   }
@@ -155,6 +131,9 @@ const columns = ref([
           :columns="columns"
           :data="cartStore.items"
         />
+      </div>
+      <div class="order-btn">
+        <!-- <button @click="cartStore.addItemsToDatabase()">Lưu giỏ hàng</button> -->
       </div>
     </div>
   </div>
@@ -186,7 +165,7 @@ const columns = ref([
   }
 }
 .table-cart {
-  margin-bottom: 200px;
+  margin-bottom: 50px;
 }
 button {
   padding: 12px 16px;
@@ -200,6 +179,10 @@ button {
     transition: all ease 0.3s;
     color: white;
   }
+}
+.order-btn {
+  text-align: right;
+  margin-bottom: 220px;
 }
 </style>
 <route lang="yaml">

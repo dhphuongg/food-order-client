@@ -4,15 +4,15 @@ import { ApiConstant } from "@/constant/api.constant";
 const cartApi = () => ({
     getProductsInCart: async (id) =>
         api.get(`${ApiConstant.cart}/${id}`),
-    addProduct: async (id, product, quantity) =>
+    addProduct: async (id, product) =>
         api.post(`${ApiConstant.cart}/${id}/products`, null, {
             params: {
                 productId: product.productId,
-                quality: quantity,
-                shopId: product.shopId
+                quality: product.quantity,
+                shopId: product.detail.shopId
             }
         }),
-    removeProduct: async (id, product, quantity) =>
+    updateProduct: async (id, product, quantity) =>
         api.put(`${ApiConstant.cart}/${id}/products/${product.productId}`, null, {
             params: {
                 quantity: quantity,
@@ -20,4 +20,4 @@ const cartApi = () => ({
             }
         })
 });
-export const { getProductsInCart, addProduct, removeProduct } = cartApi();
+export const { getProductsInCart, addProduct, updateProduct } = cartApi();

@@ -6,18 +6,6 @@ const loadingBar = useLoadingBar();
 import { getAllProduct } from '@/api/product.api';
 import { onBeforeMount } from 'vue';
 import { useCartStore } from '@/stores/cart';
-import { useAuthStore } from '@/stores/auth';
-const user = useAuthStore();
-const customerId = ref(-1);
-onBeforeMount(async () => {
-  if (
-    !(typeof user.auth.customerId === 'undefined') ||
-    !(typeof user.auth.customerName === 'undefined')
-  ) {
-    customerId.value = user.auth.customerId;
-    await cartStore.getAllProducts(customerId.value);
-  }
-});
 const numberSlides = ref(4);
 const updateNumberSlides = () => {
   const width = window.innerWidth;
@@ -41,6 +29,7 @@ onBeforeMount(() => {
   updateNumberSlides();
 });
 const listProduct = ref([]);
+const stock = ref(0);
 const route = useRoute();
 const productInfo = ref({});
 const handleGetProductInfo = async () => {
@@ -51,6 +40,7 @@ const handleGetProductInfo = async () => {
     let res = await getInfo(id, shopId);
     if (res) {
       productInfo.value = res.data;
+      stock.value = res.data.productStock;
       loadingBar.finish();
     }
   } catch (err) {
@@ -78,7 +68,7 @@ const getProducts = async () => {
 };
 
 watch(
-  () => route.params.id || route.params.shopId,
+  () => [route.params.id, route.params.shopId],
   async () => {
     window.scrollTo({
       top: 0,
@@ -87,11 +77,19 @@ watch(
     await handleGetProductInfo();
   }
 );
+const quantityToAdd = ref(1);
+const validateInputQuantity = (x) => {
+  return x > 0 && x <= stock.value;
+};
 const message = useMessage();
 const cartStore = useCartStore();
-const handleAddToCart = (product) => {
-  cartStore.addItem(customerId.value, product);
-  message.success('Thêm vào giỏ hàng thành công');
+const handleAddToCart = async (product) => {
+  try {
+    await cartStore.addItem(product, quantityToAdd.value);
+    message.success('Thêm giỏ hàng thành công');
+  } catch (e) {
+    console.log(e);
+  }
 };
 </script>
 <template>
@@ -111,24 +109,22 @@ const handleAddToCart = (product) => {
           <br />
           <span class="shop-address">{{ productInfo.shopAddress }}</span> <br />
           <div class="detail-product-infor-price">
-            <span
-              >{{
-                productInfo.productPrice.toLocaleString('vi-VN', {
-                  style: 'currency',
-                  currency: 'VND'
-                })
-              }}
-            </span>
+            <span>{{ new Intl.NumberFormat().format(productInfo.productPrice) }} VND</span>
           </div>
           <hr />
           <div class="detail-product-infor-number">
             <div>
               <span>Số lượng</span>
               <div class="detail-product-infor-number-change">
-                <button>-</button>
-                <input value="1" />
-                <button>+</button>
+                <n-input-number
+                  v-model:value="quantityToAdd"
+                  :min="1"
+                  :validator="validateInputQuantity"
+                  style="width: 100px"
+                  placeholder=""
+                />
               </div>
+              <div>Số lượng còn lại: {{ productInfo.productStock }}</div>
             </div>
           </div>
           <hr />

@@ -25,8 +25,8 @@ const handleLogin = () => {
   router.push('/login');
 };
 const handleLogout = () => {
+  cartStore.addItemsToDatabase();
   user.clear();
-  cartStore.clear();
   router.push('/');
 };
 const username = ref(user.auth.customerName);
@@ -83,9 +83,10 @@ const loggedInMenuOptions = ref([
           <IconSearch size="24" class="icon" />
         </router-link>
         <router-link to="/cart">
-          <n-badge :value="cartStore.quantity" style="margin-right: 20px">
+          <n-badge v-if="user.loggedIn" :value="cartStore.items.length" style="margin-right: 20px">
             <IconShoppingCartFilled size="24" style="color: black" />
           </n-badge>
+          <IconShoppingCartFilled v-else size="24" style="color: black; margin-right: 20px" />
         </router-link>
         <div class="user-login" v-if="user.loggedIn">
           <n-dropdown :options="options" :show-arrow="true" @select="handleSelect">
@@ -110,7 +111,7 @@ const loggedInMenuOptions = ref([
           <template #header>
             <img src="@/assets/images/logo.png" alt="logo" width="36%" />
           </template>
-          <ul class="mobile-menu" v-if="user.loggedId">
+          <ul class="mobile-menu" v-if="user.loggedIn">
             <li v-for="menu in loggedInMenuOptions" :key="menu.id">
               <router-link :to="menu.path">
                 {{ menu.title }}
