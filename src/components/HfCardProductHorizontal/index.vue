@@ -40,7 +40,11 @@ defineProps({
             <IconStarFilled color="#ffc222" size="15" />
           </div>
           <p>{{ product.categoryName }}</p>
-          <h5>{{ product.productPrice }} VND</h5>
+          <h5>
+            {{
+              product.productPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
+            }}
+          </h5>
         </div>
         <div>
           <button class="orderBtn">

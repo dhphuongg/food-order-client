@@ -8,7 +8,7 @@ const customerId = ref(-1);
 onBeforeMount(async () => {
     if (!(typeof user.auth.customerId === 'undefined') || !(typeof user.auth.customerName === 'undefined')) {
         customerId.value = user.auth.customerId;
-        cartStore.getAllProducts(customerId.value);
+        await cartStore.getAllProducts(customerId.value);
     }
 })
 </script>

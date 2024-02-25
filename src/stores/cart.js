@@ -4,12 +4,10 @@ export const useCartStore = defineStore({
     id: 'cart',
     state: () => ({
         productsInCart: [],
-        idCart: -1,
         quantityCart: 0
     }),
     getters: {
         items: (state) => state.productsInCart.data,
-        id: (state) => state.idCart,
         quantity: (state) => state.quantityCart
     },
     actions: {
@@ -17,42 +15,39 @@ export const useCartStore = defineStore({
             try {
                 this.productsInCart = await getProductsInCart(cartId)
                 if (this.productsInCart.data && this.productsInCart.data.length > 0) {
-                    this.idCart = this.productsInCart.data[0].cartId
                     this.quantityCart = this.productsInCart.data.length
                 }
             } catch (e) {
                 console.log(e);
             }
         },
-        async addItem(item) {
+        async addItem(cartId, item) {
             try {
-                let res = await addProduct(this.id, item, 1);
-                if (res && res.data) {
-                    const cartStore = useCartStore();
-                    cartStore.getAllProducts(this.id);
-                }
+                console.log(cartId);
+                let res = await addProduct(cartId, item, 1);
+                // if (res && res.data) {
+                //     await this.getAllProducts(cartId);
+                // }
             } catch (e) {
                 console.log(e);
             }
         },
-        async removeItem(item) {
+        async removeItem(cartId, item) {
             try {
-                let res = await removeProduct(this.id, item, item.quantity - 1);
-                if (res && res.data) {
-                    const cartStore = useCartStore();
-                    cartStore.getAllProducts(this.id);
-                }
+                let res = await removeProduct(cartId, item, item.quantity - 1);
+                // if (res && res.data) {
+                //     await this.getAllProducts(cartId);
+                // }
             } catch (e) {
                 console.log(e);
             }
         },
-        async deleteItem(item) {
+        async deleteItem(cartId, item) {
             try {
-                let res = await removeProduct(this.id, item, 0);
-                if (res && res.data) {
-                    const cartStore = useCartStore();
-                    cartStore.getAllProducts(this.id);
-                }
+                let res = await removeProduct(cartId, item, 0);
+                // if (res && res.data) {
+                //     await this.getAllProducts(cartId);
+                // }
             } catch (e) {
                 console.log(e);
             }

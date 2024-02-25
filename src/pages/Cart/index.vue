@@ -2,6 +2,7 @@
 import { IconTrash } from '@tabler/icons-vue';
 import { useCartStore } from '@/stores/cart.js';
 import { useAuthStore } from '@/stores/auth.js';
+import router from '@/router';
 
 const cartStore = useCartStore();
 const user = useAuthStore();
@@ -13,8 +14,9 @@ onBeforeMount(async () => {
     !(typeof user.auth.customerName === 'undefined')
   ) {
     customerId.value = user.auth.customerId;
-    cartStore.getAllProducts(customerId.value);
+    await cartStore.getAllProducts(customerId.value);
   }
+  console.log(customerId.value);
 });
 const columns = ref([
   {
@@ -24,7 +26,7 @@ const columns = ref([
     render(row) {
       return h(IconTrash, {
         onClick: () => {
-          cartStore.deleteItem(row);
+          cartStore.deleteItem(customerId.value, row);
           message.success('Xóa sản phẩm thành công');
         }
       });
@@ -57,6 +59,9 @@ const columns = ref([
           style: {
             color: 'green',
             cursor: 'pointer'
+          },
+          onClick: () => {
+            router.push(`/productdetail/${row.productId}/${row.shopId}`);
           }
         },
         row.productName
@@ -89,7 +94,7 @@ const columns = ref([
         h(
           'button',
           {
-            onClick: () => cartStore.removeItem(row)
+            onClick: () => cartStore.removeItem(customerId.value, row)
           },
           '-'
         ),
@@ -109,7 +114,10 @@ const columns = ref([
         h(
           'button',
           {
-            onClick: () => cartStore.addItem(row)
+            onClick: () => {
+              console.log('id: ', customerId.value);
+              cartStore.addItem(customerId.value, row);
+            }
           },
           '+'
         )

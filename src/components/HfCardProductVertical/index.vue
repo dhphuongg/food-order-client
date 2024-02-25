@@ -4,11 +4,12 @@ defineProps({
     type: Object,
     default(rawProps) {
       return {
-        id: '',
-        image: '',
-        name: '',
-        price: 0,
-        description: ''
+        productId: '',
+        shopId: '',
+        categoryName: '',
+        productImageUrl: '',
+        productName: '',
+        productPrice: 0,
       };
     }
   }
@@ -17,7 +18,7 @@ defineProps({
 <template>
   <router-link
     class="custom-center"
-    v-if="product && product.productId"
+    v-if="product && product.productId && product.shopId"
     :to="{ name: 'ProductDetail', params: { id: product.productId, shopId: product.shopId } }"
   >
     <div class="card">
@@ -35,7 +36,14 @@ defineProps({
           <p class="product-description">{{ product.categoryName }}</p>
           <div class="productItem">
             <div style="display: flex, alignItems: center">
-              <h3>{{ product.productPrice }} VND</h3>
+              <h3>
+                {{
+                  product.productPrice.toLocaleString('vi-VN', {
+                    style: 'currency',
+                    currency: 'VND'
+                  })
+                }}
+              </h3>
             </div>
             <div>
               <button class="orderBtn">

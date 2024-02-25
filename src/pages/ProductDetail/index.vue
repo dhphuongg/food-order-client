@@ -6,6 +6,18 @@ const loadingBar = useLoadingBar();
 import { getAllProduct } from '@/api/product.api';
 import { onBeforeMount } from 'vue';
 import { useCartStore } from '@/stores/cart';
+import { useAuthStore } from '@/stores/auth';
+const user = useAuthStore();
+const customerId = ref(-1);
+onBeforeMount(async () => {
+  if (
+    !(typeof user.auth.customerId === 'undefined') ||
+    !(typeof user.auth.customerName === 'undefined')
+  ) {
+    customerId.value = user.auth.customerId;
+    await cartStore.getAllProducts(customerId.value);
+  }
+});
 const numberSlides = ref(4);
 const updateNumberSlides = () => {
   const width = window.innerWidth;
@@ -66,7 +78,7 @@ const getProducts = async () => {
 };
 
 watch(
-  () => route.params.id,
+  () => route.params.id || route.params.shopId,
   async () => {
     window.scrollTo({
       top: 0,
@@ -78,7 +90,7 @@ watch(
 const message = useMessage();
 const cartStore = useCartStore();
 const handleAddToCart = (product) => {
-  cartStore.addItem(product);
+  cartStore.addItem(customerId.value, product);
   message.success('Thêm vào giỏ hàng thành công');
 };
 </script>
@@ -99,7 +111,14 @@ const handleAddToCart = (product) => {
           <br />
           <span class="shop-address">{{ productInfo.shopAddress }}</span> <br />
           <div class="detail-product-infor-price">
-            <span>{{ productInfo.productPrice }} VND</span>
+            <span
+              >{{
+                productInfo.productPrice.toLocaleString('vi-VN', {
+                  style: 'currency',
+                  currency: 'VND'
+                })
+              }}
+            </span>
           </div>
           <hr />
           <div class="detail-product-infor-number">
