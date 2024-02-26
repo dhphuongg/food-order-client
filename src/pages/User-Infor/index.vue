@@ -1,11 +1,9 @@
 <script setup>
-import { onBeforeMount, reactive } from 'vue';
 import { validateFullName, validateDOB, validataPhoneNumber, validatePassword } from '@/utils/validator';
 import { getUserById, updateUserAddress, updateUserInformation, changeUserPassword, deleteUserById } from '@/api/user.api';
 import { useAuthStore } from '@/stores/auth';
 import { useGeolocation } from '@vueuse/core';
 import router from '@/router';
-import { collapseLight } from 'naive-ui/es/collapse/styles';
 
 const message = useMessage();
 const auth = useAuthStore();
@@ -26,23 +24,18 @@ const loadCustomer = async () => {
         customerId.value = auth.auth.customerId;
         const data = await getUserById(customerId.value);
         userForm.value = data.data;
-        let timestampDob = new Date(userForm.value.dob).getTime();
-        userForm.value.dob = timestampDob;
-        user.value = {
-            fullName: data.data.fullName,
-            phoneNumber: data.data.phoneNumber,
-            address: data.data.address.addressName
-        };
+        userForm.value.dob = new Date(userForm.value.dob).getTime();
+        user.value = { ...data.data };
         account.username = auth.auth.customerName;
     }
 }
-onBeforeMount(() => {
-    loadCustomer();
+onBeforeMount(async () => {
+    await loadCustomer();
 });
 
-const formRef = ref(null);
-const formRefAccount = ref(null);
-const rules = {
+const formRef = ref({});
+const formRefAccount = ref({});
+const rulesInformation = {
     fullName: {
         required: true,
         validator: validateFullName,
@@ -92,8 +85,6 @@ const handleUpdateUserAddress = async () => {
             longitude: coords.value.longitude
         }
         await updateUserAddress(params);
-        loadingBar.finish();
-        disabledRef.value = true;
         message.success('Cập nhập địa chỉ thành công!');
         await loadCustomer();
     } catch (err) {
@@ -104,6 +95,8 @@ const handleUpdateUserAddress = async () => {
             message.error(err.message);
         }
     }
+    loadingBar.finish();
+    disabledRef.value = true;
 }
 const handleUpdateUserInformation = async () => {
     formRef.value?.validate(async (errors) => {
@@ -114,7 +107,6 @@ const handleUpdateUserInformation = async () => {
                 let day = new Date(userForm.value.dob).getDate();
                 let month = new Date(userForm.value.dob).getMonth() + 1;
                 let year = new Date(userForm.value.dob).getFullYear();
-                console.log(userForm.value.dob);
                 let dobUser = year + '-' + month + '-' + day;
                 const newUserData = {
                     customerId: customerId.value,
@@ -123,11 +115,8 @@ const handleUpdateUserInformation = async () => {
                     phoneNumber: userForm.value.phoneNumber
                 }
                 const res = await updateUserInformation(newUserData);
-                console.log(res);
-                loadingBar.finish();
-                disabledRef.value = true;
                 message.success('Cập nhập thông tin thành công!');
-                loadCustomer();
+                await loadCustomer();
             } catch (err) {
                 console.log(err);
                 if (!!err.response) {
@@ -136,6 +125,8 @@ const handleUpdateUserInformation = async () => {
                     message.error(err.message);
                 }
             }
+            loadingBar.finish();
+            disabledRef.value = true;
         }
     })
 }
@@ -145,22 +136,12 @@ const handleChangePassword = async () => {
             try {
                 loadingBar.start();
                 disabledRef.value = false;
-                const newPasswordData = {
-                    oldPassword: account.oldPassword,
-                    password: account.password,
-                    repeatPassword: account.repeatPassword
-                }
-                const res = await changeUserPassword(newPasswordData);
+                const res = await changeUserPassword(account);
                 if (res) {
-                    loadingBar.finish();
-                    disabledRef.value = true;
                     message.success('Thay đổi mật khẩu thành công!');
-
                 }
                 else {
-                    loadingBar.finish();
-                    disabledRef.value = true;
-                    message.success('Mật khẩu cũ không chính xác!');
+                    message.error('Mật khẩu cũ không chính xác!');
                 }
             } catch (err) {
                 console.log(err);
@@ -170,47 +151,54 @@ const handleChangePassword = async () => {
                     message.error(err.message);
                 }
             }
+            loadingBar.finish();
+            disabledRef.value = true;
         }
     })
 }
-const handleDeleteAccount = async () => {
-    try {
-        dialog.warning({
-            title: 'Xóa tài khoản',
-            content: 'Bạn có chắc chắn muốn xóa tài khoản này?',
-            positiveText: 'Đồng ý',
-            negativeText: 'Hủy',
-            onNegativeClick: async () => {
+const handleDeleteAccount = () => {
+    dialog.warning({
+        title: 'Xóa tài khoản',
+        content: 'Bạn có chắc chắn muốn xóa tài khoản này?',
+        positiveText: 'Hủy',
+        negativeText: 'Xóa tài khoản',
+        onNegativeClick: async () => {
+            try {
                 loadingBar.start();
                 disabledRef.value = false;
                 await deleteUserById(customerId.value);
-                loadingBar.finish();
-                disabledRef.value = false;
                 message.success('Xóa tài khoản thành công!');
                 auth.clear();
                 router.push("/");
-            },
-            onNegativeClick: () => {
+            } catch (err) {
+                console.log(err);
+                if (!!err.response) {
+                    message.error(err.response.data.message);
+                } else {
+                    message.error(err.message);
+                }
             }
-        })
-
-    } catch (err) {
-        console.log(err);
-        if (!!err.response) {
-            message.error(err.response.data.message);
-        } else {
-            message.error(err.message);
+            loadingBar.finish();
+            disabledRef.value = false;
         }
-    }
+
+    })
 }
 
-const scrollToTarget = (elementId) => {
-    const parent = document.querySelector(".infor-detail");
-    const targetElement = parent.querySelector(`#${elementId}`);
-    if (targetElement) {
-        targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+const scrollBehavior = (to, from, savedPosition) => {
+    if (to.hash) {
+        return {
+            el: to.hash,
+            top: 100,
+            behavior: 'smooth',
+        };
     }
-}
+};
+router.options.scrollBehavior = scrollBehavior;
+const scrollToTarget = (hash) => {
+    router.push({ hash: `#${hash}` });
+
+};
 
 
 </script>
@@ -250,7 +238,7 @@ const scrollToTarget = (elementId) => {
                     <div class="user-profile" id="user-profile">
                         <h3>Thông tin chi tiết</h3>
                         <hr> <br>
-                        <n-form :label-width="80" :model="userForm" :rules="rules" ref="formRef" size="large">
+                        <n-form :label-width="80" :model="userForm" :rules="rulesInformation" ref="formRef" size="large">
                             <n-form-item label="Họ tên:" path="fullName" style="margin-bottom: 8px;">
                                 <n-input v-model:value="userForm.fullName" placeholder="" type="text" />
                             </n-form-item>
@@ -262,7 +250,7 @@ const scrollToTarget = (elementId) => {
                                 <n-input v-model:value="userForm.phoneNumber" placeholder="" type="text" />
                             </n-form-item>
                             <n-form-item label="Địa chỉ" path="address">
-                                <n-input readonly :value="user.address" type="textarea"
+                                <n-input readonly :value="userForm.address?.addressName || 'Không xác định'" type="textarea"
                                     :autosize="{ minRows: 1, maxRows: 3 }" />
                             </n-form-item>
                             <n-form-item style="display: flex; justify-content: center;">
