@@ -1,69 +1,77 @@
-import { addProduct } from '@/api/cart.api';
 import { defineStore, acceptHMRUpdate } from 'pinia';
-import { useAuthStore } from './auth';
-export const useCartStore = defineStore({
-    id: 'cart',
-    state: () => ({
-        productsInCart: JSON.parse(localStorage.getItem("hitfood-cart")) || [],
-    }),
-    getters: {
-        items: (state) => state.productsInCart,
-    },
-    actions: {
-        saveCart() {
-            localStorage.setItem("hitfood-cart", JSON.stringify(this.productsInCart));
-        },
-        async getAllProducts() {
-            this.saveCart();
-        },
-        async addItem(item, quantity) {
-            let index = -1;
-            index = this.productsInCart.findIndex(it => it.productId === item.productId);
-            if (index === -1) {
-                this.productsInCart.push({
-                    productId: item.productId,
-                    quantity: quantity,
-                    detail: item
-                })
+import { ref, watchEffect } from 'vue';
 
-            }
-            else {
-                let quantityToAdd = quantity + this.productsInCart[index].quantity;
-                if (quantityToAdd < this.productsInCart[index].detail.productStock)
-                    this.productsInCart[index].quantity = quantityToAdd;
-                else {
-                    this.productsInCart[index].quantity = this.productsInCart[index].detail.productStock;
-                }
-            }
-            this.saveCart();
-        },
-        async updateItem(item, quantity) {
-            let index = -1;
-            index = this.items.findIndex(it => it.productId === item.productId);
-            if (quantity < this.productsInCart[index].detail.productStock)
-                this.productsInCart[index].quantity = quantity;
-            else {
-                this.productsInCart[index].quantity = this.productsInCart[index].detail.productStock;
-            }
-            this.saveCart();
-        },
-        async deleteItem(item) {
-            this.productsInCart = this.productsInCart.filter(it => it.productId !== item.productId);
-            this.saveCart();
-        },
-        async addItemsToDatabase() {
-            const user = useAuthStore();
-            const cartId = user.auth.customerId;
-            await this.productsInCart.map(async (item) => {
-                await addProduct(cartId, item)
-            })
-        },
-        async clear() {
-            this.productsInCart = [];
-        }
-    },
-})
+import { addProduct, getProductsInCart } from '@/api/cart.api';
+import { useAuthStore } from './auth';
+import { LocalStorage } from '@/constant/localStorage.constant';
+
+export const useCartStore = defineStore('cart', () => {
+  const authStore = useAuthStore();
+
+  const products = ref(JSON.parse(localStorage.getItem(LocalStorage.cart)) || []);
+  watchEffect(async () => {
+    if (authStore.loggedIn) {
+      try {
+        const res = await getProductsInCart(authStore.auth.customerId);
+        products.value = res.data;
+        console.log(res);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  });
+
+  async function saveCart() {
+    localStorage.setItem(LocalStorage.cart, JSON.stringify(products.value));
+    await addItemsToDatabase();
+  }
+
+  async function addItem(item, quantity) {
+    let index = -1;
+    index = products.value.findIndex((it) => it.productId === item.productId);
+    if (index === -1) {
+      products.value.push({
+        productId: item.productId,
+        quantity: quantity,
+        detail: item
+      });
+    } else {
+      let quantityToAdd = quantity + products.value[index].quantity;
+      if (quantityToAdd < products.value[index].detail.productStock)
+        products.value[index].quantity = quantityToAdd;
+      else {
+        products.value[index].quantity = products.value[index].detail.productStock;
+      }
+    }
+    await saveCart();
+  }
+  function updateItem(item, quantity) {
+    let index = -1;
+    index = products.value.findIndex((it) => it.productId === item.productId);
+    if (quantity < products.value[index].detail.productStock)
+      products.value[index].quantity = quantity;
+    else {
+      products.value[index].quantity = products.value[index].detail.productStock;
+    }
+    saveCart();
+  }
+  function deleteItem(item) {
+    products.value = products.value.filter((it) => it.productId !== item.productId);
+    saveCart();
+  }
+  async function addItemsToDatabase() {
+    if (authStore.loggedIn) {
+      products.value.map(async (item) => {
+        await addProduct(authStore.auth.customerId, item);
+      });
+    }
+  }
+  function clear() {
+    products.value = [];
+  }
+  return { products, saveCart, addItem, updateItem, deleteItem, addItemsToDatabase, clear };
+});
 
 if (import.meta.hot) {
-    import.meta.hot.accept(acceptHMRUpdate(useCartStore, import.meta.hot));
+  import.meta.hot.accept(acceptHMRUpdate(useCartStore, import.meta.hot));
 }

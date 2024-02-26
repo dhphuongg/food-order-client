@@ -83,7 +83,11 @@ const loggedInMenuOptions = ref([
           <IconSearch size="24" class="icon" />
         </router-link>
         <router-link to="/cart">
-          <n-badge v-if="user.loggedIn" :value="cartStore.items.length" style="margin-right: 20px">
+          <n-badge
+            v-if="user.loggedIn"
+            :value="cartStore.products.length"
+            style="margin-right: 20px"
+          >
             <IconShoppingCartFilled size="24" style="color: black" />
           </n-badge>
           <IconShoppingCartFilled v-else size="24" style="color: black; margin-right: 20px" />
@@ -138,7 +142,9 @@ const loggedInMenuOptions = ref([
 .header {
   width: 100% !important;
   height: $header-height;
-  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+  box-shadow:
+    0 2px 5px 0 rgba(0, 0, 0, 0.16),
+    0 2px 10px 0 rgba(0, 0, 0, 0.12);
   @include position(fixed, $t: 0, $r: 0, $l: 0, $index: 10);
 
   .wide,

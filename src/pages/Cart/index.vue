@@ -129,7 +129,7 @@ const columns = ref([
           :bordered="false"
           :single-line="false"
           :columns="columns"
-          :data="cartStore.items"
+          :data="cartStore.products"
         />
       </div>
       <div class="order-btn">
