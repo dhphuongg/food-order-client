@@ -6,6 +6,7 @@ const loadingBar = useLoadingBar();
 import { getAllProduct } from '@/api/product.api';
 import { onBeforeMount } from 'vue';
 import { useCartStore } from '@/stores/cart';
+import { toRaw } from 'vue';
 const numberSlides = ref(4);
 const updateNumberSlides = () => {
   const width = window.innerWidth;
@@ -85,7 +86,7 @@ const message = useMessage();
 const cartStore = useCartStore();
 const handleAddToCart = async (product) => {
   try {
-    await cartStore.addItem(product, quantityToAdd.value);
+    await cartStore.addItem(toRaw(product), quantityToAdd.value);
     message.success('Thêm giỏ hàng thành công');
   } catch (e) {
     console.log(e);

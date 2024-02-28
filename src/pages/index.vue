@@ -1,8 +1,13 @@
 <script setup>
+import { useAuthStore } from '@/stores/auth';
 import { useCartStore } from '@/stores/cart';
 const cartStore = useCartStore();
+const authStore = useAuthStore();
 onBeforeMount(async () => {
-  await cartStore.getAllProducts();
+  if (authStore.loggedIn) {
+    await cartStore.updateCartAfterLogin();
+  }
+  await cartStore.saveCart();
 });
 </script>
 <template>

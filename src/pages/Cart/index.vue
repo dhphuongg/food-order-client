@@ -1,4 +1,5 @@
 <script setup>
+import { toRaw } from 'vue';
 import { IconTrash } from '@tabler/icons-vue';
 import { useCartStore } from '@/stores/cart.js';
 import router from '@/router';
@@ -78,7 +79,7 @@ const columns = ref([
     title: 'Số lượng',
     key: 'quantity',
     align: 'center',
-    render(row) {
+    render(row, index) {
       return h('div', [
         h(NInputNumber, {
           style: {
@@ -86,13 +87,16 @@ const columns = ref([
             width: '150px',
             textAlign: 'center'
           },
-          value: row.quantity,
+          value: cartStore.products[index].quantity,
           min: 1,
           max: row.detail.productStock,
-          onChange: async (value) => {
+          onUpdateValue: async (value) => {
+            console.log(row);
             try {
+              console.log('row', row, value);
               await cartStore.updateItem(row, value);
             } catch (e) {
+              console.log(e);
               message.error('Có lỗi khi cập nhật số lượng');
             }
           }
@@ -104,7 +108,7 @@ const columns = ref([
     title: 'Thành tiền',
     key: 'address',
     align: 'center',
-    render(row) {
+    render(row, index) {
       return h(
         'span',
         {
@@ -112,7 +116,9 @@ const columns = ref([
             color: 'red'
           }
         },
-        new Intl.NumberFormat().format(row.detail.productPrice * row.quantity) + 'đ'
+        new Intl.NumberFormat().format(
+          row.detail.productPrice * cartStore.products[index].quantity
+        ) + 'đ'
       );
     }
   }
@@ -129,7 +135,7 @@ const columns = ref([
           :bordered="false"
           :single-line="false"
           :columns="columns"
-          :data="cartStore.products"
+          :data="toRaw(cartStore.products)"
         />
       </div>
       <div class="order-btn">
@@ -187,7 +193,6 @@ button {
 </style>
 <route lang="yaml">
     name: Cart
-    meta: {requiresAuth: true}
     layout: default
 </route>
     
