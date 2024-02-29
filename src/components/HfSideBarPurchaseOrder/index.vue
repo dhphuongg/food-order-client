@@ -22,20 +22,20 @@ const auth = useAuthStore();
         <div class="nav">
             <ul>
                 <li>
-                    <router-link to="/myorder">
+                    <router-link to="/myorder" :class="{ 'active': $route.path === '/myorder' }">
                         <IconTruckDelivery size="20" />
                         Đơn hàng của tôi
                     </router-link>
                 </li>
                 <li>
-                    <router-link to="/history-ordered">
+                    <router-link to="/history-ordered" :class="{ 'active': $route.path === '/history-ordered' }">
                         <IconHistory size="20" />
                         Lịch sử đơn hàng
 
                     </router-link>
                 </li>
                 <li>
-                    <router-link to="/user-infor">
+                    <router-link to="/user-infor" :class="{ 'active': $route.path === '/user-infor' }">
                         <IconUserCheck size="20" />
                         Tài khoản của tôi
                     </router-link>
@@ -99,10 +99,16 @@ const auth = useAuthStore();
                 margin: 12px 0;
 
                 &:hover {
-                    background-color: cornflowerblue;
+                    background-color: $secondary-color;
                     color: #fff;
                     border-radius: 4px;
                 }
+            }
+
+            .active {
+                background-color: $primary-color ;
+                color: #fff;
+                border-radius: 4px;
             }
         }
     }

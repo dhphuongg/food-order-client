@@ -29,18 +29,17 @@ const loadDataPlacedOrders = async () => {
         }
     }
 }
-onBeforeMount(loadDataPlacedOrders);
+onBeforeMount(async () => await loadDataPlacedOrders());
 const handleCancelOrder = async (billId) => {
     try {
         loadingBar.start()
         disabledRef.value = false;
         const res = await cancelOrder(billId);
-        console.log(res.data.status);
         if (res.data.status) {
             message.success('Hủy đơn hàng thành công');
             loadDataPlacedOrders();
         } else {
-            message.success('Không thể hủy đơn hàng vì đơn hàng đang được vận chuyển!');
+            message.error('Không thể hủy đơn hàng vì đơn hàng đang được vận chuyển!');
         }
         loadingBar.finish()
         disabledRef.value = true;
@@ -59,7 +58,7 @@ const handleCancelOrder = async (billId) => {
 <template>
     <div class="my-order">
         <h1>Đơn hàng của tôi</h1>
-        <div class="order-list" v-if="dataProducts">
+        <div class="order-list" v-if="dataProducts.length">
             <div class="order-product" v-for="item in dataProducts" :key="item.id">
                 <div class="shop-infor">
                     <p>
@@ -93,8 +92,12 @@ const handleCancelOrder = async (billId) => {
                 </div>
             </div>
         </div>
-        <div v-else>
-            Loading...
+        <div v-else class="order-empty">
+            <img src="@/assets/images/cargo.png" alt="">
+            <h3>Chưa có đơn hàng</h3>
+            <HfButton>
+                Đặt hàng
+            </HfButton>
         </div>
     </div>
 </template>
@@ -119,7 +122,10 @@ const handleCancelOrder = async (billId) => {
             color: #fff;
         }
     }
+
+
 }
+
 
 .order-product {
     width: 100%;
@@ -186,6 +192,35 @@ const handleCancelOrder = async (billId) => {
         p {
             @include flex(center, flex-end);
             color: #313131;
+        }
+    }
+}
+
+.order-empty {
+    border: 1px solid #F06C25;
+    border-radius: 4px;
+    padding: 40px;
+    @include flex(center, center);
+    flex-direction: column;
+
+    >h3 {
+        font: {
+            size: 20px;
+            weight: 400;
+        }
+
+        margin: 20px 0;
+    }
+
+    >img {
+        width: 80px;
+    }
+
+    >button {
+        background-color: $secondary-color;
+
+        &:hover {
+            background-color: $primary-color;
         }
     }
 }

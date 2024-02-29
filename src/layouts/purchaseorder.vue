@@ -7,7 +7,7 @@
         </div>
     </div>
 </template>
-<style scoped>
+<style scoped lang="scss">
 .purchase-order {
     display: flex;
 
