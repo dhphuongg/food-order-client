@@ -63,4 +63,31 @@ function validatePassword(_, password) {
   return true;
 }
 
-export { validateUsername, validateEmail, validatePassword };
+function validateFullName(_, fullname) {
+  if (fullname === null || typeof fullname === 'undefined') {
+    return new Error('Vui lòng nhập họ tên!');
+  }
+
+  if (fullname.trim() === '') {
+    return new Error('Vui lòng nhập họ tên!');
+  }
+}
+
+function validateDOB(_, dob) {
+  if (dob === null || typeof dob === 'undefined') {
+    return new Error('Vui lòng nhập ngày tháng năm sinh theo định dạng yyyy-mm-dd!');
+  }
+}
+function validataPhoneNumber(_, phoneNumber) {
+  if (phoneNumber === null || typeof phoneNumber === 'undefined') {
+    return new Error('Vui lòng nhập số điện thoại của bạn!');
+  }
+  if (phoneNumber.trim() === '') {
+    return new Error("Vui lòng nhập số điện thoại của bạn!");
+  }
+  const regex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
+  if (!regex.test(phoneNumber)) {
+    return new Error("Số điện thoại không được chứa kí tự chữ cái và ký tự đắc biệt!");
+  }
+}
+export { validateUsername, validateEmail, validatePassword, validateFullName, validateDOB, validataPhoneNumber };
