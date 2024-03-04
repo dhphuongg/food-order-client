@@ -1,5 +1,5 @@
 import { defineStore, acceptHMRUpdate } from 'pinia';
-import { ref, toRaw, watchEffect } from 'vue';
+import { ref, watchEffect } from 'vue';
 
 import { addProduct, getProductsInCart, updateProduct } from '@/api/cart.api';
 import { useAuthStore } from './auth';
@@ -56,40 +56,8 @@ export const useCartStore = defineStore('cart', () => {
       console.log(e);
     }
   }
-  async function saveCart() {
-    if (authStore.loggedIn) {
-      try {
-        const res = await getProductsInCart(authStore.auth.customerId);
-        let dataProduct = res.data;
-        const promises = dataProduct.map(async (item) => {
-          try {
-            let res = await getInfo(item.productId, item.shopId);
-            if (res && res.data) {
-              let detailItem = res.data;
-              return {
-                productId: detailItem.productId,
-                quantity: item.quantity,
-                detail: detailItem
-              }
-            }
-          }
-          catch (e) {
-            console.log(e);
-          }
-        });
-        const result = await Promise.all(promises);
-        dataProduct = result;
-        products.value = dataProduct;
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    localStorage.setItem(LocalStorage.cart, JSON.stringify(products.value));
-    // await addItemsToDatabase();
-  }
 
   async function addItem(item, quantity) {
-    console.log(item, quantity);
     let index = -1;
     index = products.value.findIndex((it) => it.productId === item.productId);
     if (index === -1) {
@@ -106,20 +74,17 @@ export const useCartStore = defineStore('cart', () => {
         products.value[index].quantity = products.value[index].detail.productStock;
       }
     }
-
+    localStorage.setItem(LocalStorage.cart, JSON.stringify(products.value));
     if (authStore.loggedIn) {
       try {
-        console.log(item, quantity);
         let res = await addProduct(authStore.auth.customerId, item, quantity);
         console.log("res add: ", res);
       } catch (e) {
         console.log(e);
       }
     }
-    await saveCart();
   }
   async function updateItem(item, quantity) {
-    console.log("update", item, quantity, products.value);
     let index = -1;
     index = products.value.findIndex((it) => it.productId === item.productId);
     if (quantity < products.value[index].detail.productStock)
@@ -127,7 +92,7 @@ export const useCartStore = defineStore('cart', () => {
     else {
       products.value[index].quantity = products.value[index].detail.productStock;
     }
-    console.log(item, quantity);
+    localStorage.setItem(LocalStorage.cart, JSON.stringify(products.value));
     if (authStore.loggedIn) {
       try {
         let res = await updateProduct(authStore.auth.customerId, item, quantity);
@@ -135,10 +100,10 @@ export const useCartStore = defineStore('cart', () => {
         console.log(e);
       }
     }
-    saveCart();
   }
   async function deleteItem(item) {
     products.value = products.value.filter((it) => it.productId !== item.productId);
+    localStorage.setItem(LocalStorage.cart, JSON.stringify(products.value));
     if (authStore.loggedIn) {
       try {
         let res = await updateProduct(authStore.auth.customerId, item, 0);
@@ -146,7 +111,6 @@ export const useCartStore = defineStore('cart', () => {
         console.log(e);
       }
     }
-    saveCart();
   }
   async function addItemsToDatabase() {
     if (authStore.loggedIn) {
@@ -158,7 +122,7 @@ export const useCartStore = defineStore('cart', () => {
   function clear() {
     products.value = [];
   }
-  return { products, updateCartAfterLogin, saveCart, addItem, updateItem, deleteItem, addItemsToDatabase, clear };
+  return { products, updateCartAfterLogin, addItem, updateItem, deleteItem, addItemsToDatabase, clear };
 });
 
 if (import.meta.hot) {
