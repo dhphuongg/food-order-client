@@ -23,9 +23,6 @@ const updateNumberSlides = () => {
 onMounted(() => {
   window.addEventListener('resize', updateNumberSlides);
 });
-onUnmounted(() => {
-  window.removeEventListener('resize', updateNumberSlides);
-});
 onBeforeMount(() => {
   updateNumberSlides();
 });

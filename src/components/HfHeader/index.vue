@@ -1,8 +1,11 @@
 <script setup>
+import { useAuthStore } from '@/stores/auth';
+import { useCartStore } from '@/stores/cart';
 import { useRouter } from 'vue-router';
 const show = ref(false);
 const router = useRouter();
 const user = useAuthStore();
+const cartStore = useCartStore();
 const message = useMessage();
 const username = ref(user.auth.customerName);
 const options = ref([
@@ -146,17 +149,23 @@ const closedDragwer = () => {
             <IconShoppingCartFilled size="24" style="color: black" />
           </n-badge>
         </router-link>
-        <div class="user-login" v-if="user.loggedIn">
-          <n-dropdown :options="options" :show-arrow="true" @select="handleSelect">
-            <div style="display: flex; justify-content: space-between; align-items: center">
-              <img src="@/assets/images/user-avatar.jpg" alt="avatar" class="user-avatar" />
-              <p>
-                {{ username }}
-              </p>
-            </div>
-          </n-dropdown>
-        </div>
-        <HfButton v-else @click="handleLogin">Đăng nhập</HfButton>
+        <n-dropdown v-if="user.loggedIn" :options="options" show-arrow @select="goToPage">
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              cursor: pointer;
+            "
+            @click="() => goToPage('/user-infor')"
+          >
+            <img src="@/assets/images/user-avatar.jpg" alt="avatar" class="user-avatar" />
+            <p>
+              {{ username }}
+            </p>
+          </div>
+        </n-dropdown>
+        <HfButton v-else @click="() => goToPage('/login')">Đăng nhập</HfButton>
       </div>
       <div class="nav-mobile">
         <router-link to="/">

@@ -1,13 +1,14 @@
 <script setup>
 import { useAuthStore } from '@/stores/auth';
 import { useCartStore } from '@/stores/cart';
+import { onMounted } from 'vue';
 const cartStore = useCartStore();
 const authStore = useAuthStore();
-onBeforeMount(async () => {
+onMounted(async () => {
   if (authStore.loggedIn) {
     await cartStore.updateCartAfterLogin();
-  }
-  await cartStore.saveCart();
+  } 
+  else await cartStore.saveCart();
 });
 </script>
 <template>
