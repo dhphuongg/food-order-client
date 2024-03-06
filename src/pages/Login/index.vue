@@ -4,12 +4,13 @@ import { getCurrentUser } from '@/api/user.api';
 import { useAuthStore } from '@/stores/auth';
 import { validateUsername, validatePassword } from '@/utils/validator';
 import { useRoute } from 'vue-router';
+import { getCurrentUser } from '@/api/user.api';
+import { useRoute } from 'vue-router';
 
 const message = useMessage();
 const authStore = useAuthStore();
 const router = useRouter();
 const route = useRoute();
-
 const loading = ref(false);
 const account = reactive({
   username: null,

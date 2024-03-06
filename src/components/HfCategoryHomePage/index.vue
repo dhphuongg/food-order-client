@@ -45,16 +45,8 @@ const getCategories = async () => {
   <div class="container">
     <div class="wide pad40-0-60 category">
       <h1 class="category-title home-title">Danh mục sản phẩm</h1>
-      <n-carousel
-        class="carousel-category"
-        autoplay
-        show-arrow="true"
-        :interval="3000"
-        :space-between="20"
-        :loop="true"
-        :slides-per-view="numberSlides"
-        draggable
-      >
+      <n-carousel class="carousel-category" autoplay :show-arrow="true" :interval="3000" :space-between="20" :loop="true"
+        :slides-per-view="numberSlides" draggable>
         <hf-card-category v-for="item in listCategory" :key="item.id" :category="item" />
         <template #dots="{ total, currentIndex, to }">
           <hf-custom-dots :total="total" :currentIndex="currentIndex" @to="to"></hf-custom-dots>

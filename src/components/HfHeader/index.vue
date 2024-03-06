@@ -1,9 +1,10 @@
 <script setup>
 import { useRouter } from 'vue-router';
-import { useAuthStore } from '@/stores/auth';
-import { useCartStore } from '@/stores/cart';
-const cartStore = useCartStore();
+const show = ref(false);
+const router = useRouter();
 const user = useAuthStore();
+const message = useMessage();
+const username = ref(user.auth.customerName);
 const options = ref([
   {
     label: 'Thông tin cá nhân',
@@ -11,31 +12,13 @@ const options = ref([
   },
   {
     label: 'Đơn mua',
-    key: '/'
+    key: '/myorder'
   },
   {
     label: 'Đăng xuất',
     key: 'logout'
   }
 ]);
-const show = ref(false);
-const router = useRouter();
-const handleLogin = () => {
-  router.push('/login');
-};
-const handleLogout = () => {
-  cartStore.addItemsToDatabase();
-  user.clear();
-  router.push('/');
-};
-const username = ref(user.auth.customerName);
-const handleSelect = (key) => {
-  if (key === 'logout') {
-    handleLogout();
-  } else {
-    router.push(key);
-  }
-};
 const guestMenuOptions = ref([
   {
     id: 1,
@@ -66,10 +49,23 @@ const loggedInMenuOptions = ref([
   },
   {
     id: 3,
-    path: '/',
+    path: '/myorder',
     title: 'Đơn mua'
   }
 ]);
+
+const goToPage = (key) => {
+  if (key === 'logout') {
+    user.clear();
+    message.success('Đăng xuất thành công!');
+    router.push('/');
+  } else {
+    router.push(key);
+  }
+};
+const closedDragwer = () => {
+  show.value = false;
+};
 </script>
 <template>
   <header class="container header">
@@ -81,11 +77,72 @@ const loggedInMenuOptions = ref([
         <router-link to="/">
           <IconSearch size="24" class="icon" />
         </router-link>
-        <router-link to="/cart">
-          <n-badge
-            :value="cartStore.products.length"
-            style="margin-right: 20px"
+        <router-link to="/login">
+          <n-badge :value="cartStore.products.length" style="margin-right: 20px">
+            <IconShoppingCartFilled size="24" class="icon" />
+          </n-badge>
+        </router-link>
+        <n-dropdown v-if="user.loggedIn" :options="options" show-arrow @select="goToPage">
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              cursor: pointer;
+            "
+            @click="() => goToPage('/user-infor')"
           >
+            <img src="@/assets/images/user-avatar.jpg" alt="avatar" class="user-avatar" />
+            <p>
+              {{ username }}
+            </p>
+          </div>
+        </n-dropdown>
+        <HfButton v-else @click="() => goToPage('/login')">Đăng nhập</HfButton>
+      </div>
+      <div class="nav-mobile">
+        <router-link to="/">
+          <IconSearch size="24" class="icon mobile-search" />
+        </router-link>
+        <IconMenu2 class="menu-mobile" @click="show = true" />
+      </div>
+      <n-drawer v-model:show="show" width="70%">
+        <n-drawer-content closable>
+          <template #header>
+            <img src="@/assets/images/logo.png" alt="logo" width="36%" />
+          </template>
+          <ul class="mobile-menu" v-if="user.loggedIn">
+            <li v-for="menu in loggedInMenuOptions" :key="menu.id">
+              <router-link :to="menu.path" @click="closedDragwer">
+                {{ menu.title }}
+              </router-link>
+            </li>
+            <li @click="() => goToPage('logout')">
+              <router-link to="" @click="closedDragwer"> Đăng xuất </router-link>
+            </li>
+          </ul>
+          <ul class="mobile-menu" v-else>
+            <li v-for="menu in guestMenuOptions" :key="menu.id">
+              <router-link :to="menu.path">
+                {{ menu.title }}
+              </router-link>
+            </li>
+          </ul>
+        </n-drawer-content>
+      </n-drawer>
+    </div>
+  </header>
+  <header class="container header">
+    <div class="wide">
+      <router-link to="/">
+        <img src="@/assets/images/logo.png" alt="logo" class="header-logo" />
+      </router-link>
+      <div class="header-menu">
+        <router-link to="/">
+          <IconSearch size="24" class="icon" />
+        </router-link>
+        <router-link to="/cart">
+          <n-badge :value="cartStore.products.length" style="margin-right: 20px">
             <IconShoppingCartFilled size="24" style="color: black" />
           </n-badge>
         </router-link>
@@ -203,6 +260,7 @@ const loggedInMenuOptions = ref([
 
     a {
       padding-left: 4px;
+      display: block;
     }
 
     &:hover {

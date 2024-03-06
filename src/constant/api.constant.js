@@ -13,5 +13,10 @@ export const ApiConstant = {
     address: "address",
     changePassword: "auth/change-password"
   },
+  order: {
+    history: 'billhistory/customer',
+    myorder: 'billbuy/customer',
+    cancel: 'bill/cancel-order'
+  },
   cart: "cart"
 };
