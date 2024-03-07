@@ -9,37 +9,6 @@ import { getInfo } from '@/api/product.api';
 export const useCartStore = defineStore('cart', () => {
   const authStore = useAuthStore();
   const products = ref(JSON.parse(localStorage.getItem(LocalStorage.cart)) || []);
-  // watchEffect(async () => {
-  //   if (authStore.loggedIn) {
-  //     try {
-  //       console.log(authStore.auth.customerId);
-  //       const res = await getProductsInCart(authStore.auth.customerId);
-  //       let dataProduct = res.data;
-  //       const promises = dataProduct.map(async (item) => {
-  //         try {
-  //           let res = await getInfo(item.productId, item.shopId);
-  //           if (res && res.data) {
-  //             let detailItem = res.data;
-  //             return {
-  //               productId: detailItem.productId,
-  //               quantity: item.quantity,
-  //               detail: detailItem
-  //             }
-  //           }
-  //         }
-  //         catch (e) {
-  //           console.log(e);
-  //         }
-  //       });
-  //       const result = await Promise.all(promises);
-  //       dataProduct = result;
-  //       products.value = dataProduct;
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   }
-  //   localStorage.setItem(LocalStorage.cart, JSON.stringify(products.value));
-  // });
   async function saveCart() {
     if (authStore.loggedIn) {
       try {
@@ -155,6 +124,7 @@ export const useCartStore = defineStore('cart', () => {
   }
   function clear() {
     products.value = [];
+    localStorage.removeItem(LocalStorage.cart);
   }
   return { products, saveCart, updateCartAfterLogin, addItem, updateItem, deleteItem, addItemsToDatabase, clear };
 });

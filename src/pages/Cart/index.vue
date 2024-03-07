@@ -138,13 +138,13 @@ const columns = ref([
           :data="toRaw(cartStore.products)"
         />
       </div>
-      <div class="order-btn">
-        <!-- <button @click="cartStore.addItemsToDatabase()">Lưu giỏ hàng</button> -->
+      <div class="order-btn" v-if="cartStore.products.length > 0">
+        <button><router-link to="/order">Đặt hàng</router-link></button>
       </div>
     </div>
   </div>
 </template>
-<style setup lang="scss">
+<style scoped lang="scss">
 .cart-container {
   display: flex;
   justify-content: center;
@@ -180,15 +180,25 @@ button {
   font-family: 'Roboto', sans-serif;
   font-size: 16px;
   cursor: pointer;
+  background: #f06c25;
+  color: white;
+
   &:hover {
-    background: #f06c25;
+    opacity: 0.9;
     transition: all ease 0.3s;
-    color: white;
   }
 }
 .order-btn {
+  a {
+    color: white;
+  }
   text-align: right;
-  margin-bottom: 220px;
+  margin-bottom: 250px;
+  button {
+    &:hover {
+      background-color: green;
+    }
+  }
 }
 </style>
 <route lang="yaml">
