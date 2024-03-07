@@ -1,52 +1,38 @@
 <script setup>
+import { toRaw } from 'vue';
 import { IconTrash } from '@tabler/icons-vue';
-const data = reactive([
-  {
-    key: 0,
-    image:
-      'https://www.shutterstock.com/image-photo/banh-mi-vietnamese-word-bread-600nw-1954013653.jpg',
-    name: 'John Brown',
-    price: 32,
-    quantity: 1
-  },
-  {
-    key: 1,
-    image:
-      'https://www.shutterstock.com/image-photo/banh-mi-vietnamese-word-bread-600nw-1954013653.jpg',
-    name: 'Jim Green',
-    price: 42,
-    quantity: 1
-  },
-  {
-    key: 2,
-    image:
-      'https://www.shutterstock.com/image-photo/banh-mi-vietnamese-word-bread-600nw-1954013653.jpg',
-    name: 'Joe Black',
-    price: 32,
-    quantity: 2
-  }
-]);
-const columns = reactive([
+import { useCartStore } from '@/stores/cart.js';
+import router from '@/router';
+import { NInputNumber, useMessage } from 'naive-ui';
+
+const cartStore = useCartStore();
+const message = useMessage();
+
+const columns = ref([
   {
     title: 'Xóa',
     key: 'actions',
     align: 'center',
     render(row) {
       return h(IconTrash, {
-        onClick: () => console.log(row)
+        onClick: async () => {
+          await cartStore.deleteItem(row);
+          message.success('Xóa sản phẩm thành công');
+        }
       });
     }
   },
   {
     title: 'Ảnh',
-    key: 'image',
+    key: 'productImage',
     align: 'center',
     render(row) {
       return h('img', {
-        src: row.image,
+        src: row.detail.productImageUrl,
         style: {
           width: '70px',
-          height: '50px'
+          height: '50px',
+          cursor: 'pointer'
         },
         onClick: () => console.log(row)
       });
@@ -54,54 +40,67 @@ const columns = reactive([
   },
   {
     title: 'Tên sản phẩm',
-    key: 'name',
+    key: 'productName',
     align: 'center',
     render(row) {
       return h(
         'span',
         {
           style: {
-            color: 'green'
+            color: 'green',
+            cursor: 'pointer'
+          },
+          onClick: () => {
+            router.push(`/productdetail/${row.productId}/${row.detail.shopId}`);
           }
         },
-        row.name
+        row.detail.productName
       );
     }
   },
   {
     title: 'Giá',
-    key: 'price',
-    align: 'center'
+    key: 'productId',
+    align: 'center',
+    render(row) {
+      return h(
+        'span',
+        {
+          style: {
+            color: 'red',
+            cursor: 'pointer'
+          }
+        },
+        new Intl.NumberFormat().format(row.detail.productPrice) + 'đ'
+      );
+    }
   },
   {
     title: 'Số lượng',
     key: 'quantity',
     align: 'center',
-    render(row) {
+    render(row, index) {
       return h('div', [
-        h(
-          'button',
-          {
-            onClick: () => console.log('Decrease')
-          },
-          '-'
-        ),
-        h('input', {
+        h(NInputNumber, {
           style: {
-            border: 'none',
-            width: '40px',
+            margin: '0 auto',
+            width: '150px',
             textAlign: 'center'
           },
-          type: 'text',
-          value: row.quantity
-        }),
-        h(
-          'button',
-          {
-            onClick: () => console.log('Increase')
-          },
-          '+'
-        )
+          value: cartStore.products[index].quantity,
+          min: 1,
+          max: row.detail.productStock,
+          onUpdateValue: async (value) => {
+            console.log(row);
+            try {
+              console.log('row', row, value);
+              await cartStore.updateItem(row, value);
+            } catch (e) {
+              console.log(e);
+              message.error('Có lỗi khi cập nhật số lượng');
+            }
+          }
+        })
       ]);
     }
   },
@@ -109,7 +108,7 @@ const columns = reactive([
     title: 'Thành tiền',
     key: 'address',
     align: 'center',
-    render(row) {
+    render(row, index) {
       return h(
         'span',
         {
@@ -117,12 +116,15 @@ const columns = reactive([
             color: 'red'
           }
         },
-        row.price * row.quantity + ' đ'
+        new Intl.NumberFormat().format(
+          row.detail.productPrice * cartStore.products[index].quantity
+        ) + 'đ'
       );
     }
   }
 ]);
 </script>
+
 <template>
   <div class="cart-container cart">
     <div>
@@ -133,8 +135,11 @@ const columns = reactive([
           :bordered="false"
           :single-line="false"
           :columns="columns"
-          :data="data"
+          :data="toRaw(cartStore.products)"
         />
+      </div>
+      <div class="order-btn">
+        <!-- <button @click="cartStore.addItemsToDatabase()">Lưu giỏ hàng</button> -->
       </div>
     </div>
   </div>
@@ -166,7 +171,7 @@ const columns = reactive([
   }
 }
 .table-cart {
-  margin-bottom: 200px;
+  margin-bottom: 50px;
 }
 button {
   padding: 12px 16px;
@@ -181,10 +186,13 @@ button {
     color: white;
   }
 }
+.order-btn {
+  text-align: right;
+  margin-bottom: 220px;
+}
 </style>
 <route lang="yaml">
     name: Cart
-    meta:
-      layout: default
+    layout: default
 </route>
     

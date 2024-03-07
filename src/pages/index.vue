@@ -1,4 +1,16 @@
-<script setup></script>
+<script setup>
+import { useAuthStore } from '@/stores/auth';
+import { useCartStore } from '@/stores/cart';
+import { onMounted } from 'vue';
+const cartStore = useCartStore();
+const authStore = useAuthStore();
+onMounted(async () => {
+  if (authStore.loggedIn) {
+    await cartStore.updateCartAfterLogin();
+  } 
+  else await cartStore.saveCart();
+});
+</script>
 <template>
   <div class="main">
     <HfSearchBannerHomePage />

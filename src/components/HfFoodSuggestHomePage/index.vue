@@ -51,7 +51,7 @@ const getProducts = async () => {
         :slides-per-view="numberSlides"
         draggable
       >
-        <hf-card-product-vertical v-for="item in listProduct" :key="item.id" :product="item" />
+        <hf-card-product-vertical v-for="item in listProduct" :key="item.productId" :product="item" />
         <template #dots="{ total, currentIndex, to }">
           <hf-custom-dots :total="total" :currentIndex="currentIndex" @to="to"></hf-custom-dots>
         </template>

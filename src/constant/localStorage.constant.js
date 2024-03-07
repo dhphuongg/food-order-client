@@ -1,4 +1,5 @@
 const appname = 'hitfood';
 export const LocalStorage = {
-  auth: appname + '-auth'
+  auth: appname + '-auth',
+  cart: appname + '-cart'
 };

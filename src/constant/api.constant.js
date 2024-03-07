@@ -17,5 +17,6 @@ export const ApiConstant = {
     history: 'billhistory/customer',
     myorder: 'billbuy/customer',
     cancel: 'bill/cancel-order'
-  }
+  },
+  cart: "cart"
 };

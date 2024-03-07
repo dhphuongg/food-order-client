@@ -18,16 +18,19 @@ defineProps({
   <div class="horizontal-card">
     <div>
       <div class="horizontal-card-img">
-        <img :src="product.image" alt="" />
+        <img :src="product.productImageUrl" alt="" />
       </div>
       <div class="horizontal-card-content">
         <div>
           <router-link
             class="custom-center"
-            v-if="product && product.id"
-            :to="{ name: 'ProductDetail', params: { id: product.id } }"
+            v-if="product && product.productId"
+            :to="{
+              name: 'ProductDetail',
+              params: { id: product.productId, shopId: product.shopId }
+            }"
           >
-            <span>{{ product.name }}</span>
+            <span>{{ product.productName }}</span>
           </router-link>
           <div class="card-icon">
             <IconStarFilled color="#ffc222" size="15" />
@@ -36,8 +39,12 @@ defineProps({
             <IconStarFilled color="#ffc222" size="15" />
             <IconStarFilled color="#ffc222" size="15" />
           </div>
-          <p>{{ product.description }}</p>
-          <h5>{{ product.price }} VND</h5>
+          <p>{{ product.categoryName }}</p>
+          <h5>
+            {{
+              product.productPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
+            }}
+          </h5>
         </div>
         <div>
           <button class="orderBtn">
