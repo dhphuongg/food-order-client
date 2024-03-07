@@ -200,6 +200,10 @@ button {
     }
   }
 }
+.order-btn {
+  text-align: right;
+  margin-bottom: 220px;
+}
 </style>
 <route lang="yaml">
     name: Cart
